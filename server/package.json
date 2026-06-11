@@ -8,7 +8,9 @@
     "start": "node src/index.js"
   },
   "dependencies": {
+    "bcrypt": "latest",
     "express": "latest",
+    "jsonwebtoken": "latest",
     "sqlite3": "latest"
   },
   "devDependencies": {}
