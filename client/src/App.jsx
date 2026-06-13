@@ -1,6 +1,7 @@
 ﻿import { useState } from "react";
 import IngredientsPage from "./pages/IngredientsPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
+import RecipeGenerationPage from "./pages/RecipeGenerationPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import { getToken, removeToken } from "./services/api.js";
 
@@ -21,8 +22,22 @@ function App() {
     );
   }
 
+  if (page === "recipes") {
+    return (
+      <RecipeGenerationPage
+        onBack={() => setPage("ingredients")}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
   if (page === "ingredients") {
-    return <IngredientsPage onLogout={handleLogout} />;
+    return (
+      <IngredientsPage
+        onGenerateRecipes={() => setPage("recipes")}
+        onLogout={handleLogout}
+      />
+    );
   }
 
   return (

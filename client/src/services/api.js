@@ -75,3 +75,10 @@ export function deleteIngredient(id) {
     method: "DELETE"
   });
 }
+
+export function generateRecipes(options) {
+  return request("/recipes/generate", {
+    method: "POST",
+    body: JSON.stringify(options)
+  });
+}

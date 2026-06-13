@@ -12,7 +12,7 @@ const emptyForm = {
   unit: ""
 };
 
-function IngredientsPage({ onLogout }) {
+function IngredientsPage({ onGenerateRecipes, onLogout }) {
   const [ingredients, setIngredients] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
@@ -103,7 +103,10 @@ function IngredientsPage({ onLogout }) {
           <h1>SMARTKITCHEN</h1>
           <p>My Ingredients</p>
         </div>
-        <button type="button" onClick={onLogout}>Logout</button>
+        <div className="button-row">
+          <button type="button" onClick={onGenerateRecipes}>Generate Recipes</button>
+          <button type="button" onClick={onLogout}>Logout</button>
+        </div>
       </header>
 
       <section className="content-grid">
