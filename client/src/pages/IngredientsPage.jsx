@@ -12,7 +12,7 @@ const emptyForm = {
   unit: ""
 };
 
-function IngredientsPage({ onGenerateRecipes, onLogout }) {
+function IngredientsPage({ onGenerateRecipes, onSavedRecipes, onLogout }) {
   const [ingredients, setIngredients] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
@@ -105,6 +105,7 @@ function IngredientsPage({ onGenerateRecipes, onLogout }) {
         </div>
         <div className="button-row">
           <button type="button" onClick={onGenerateRecipes}>Generate Recipes</button>
+          <button type="button" className="secondary-button" onClick={onSavedRecipes}>Saved Recipes</button>
           <button type="button" onClick={onLogout}>Logout</button>
         </div>
       </header>

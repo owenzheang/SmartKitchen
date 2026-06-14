@@ -213,3 +213,43 @@ select {
   color: #2563eb;
   font-weight: 700;
 }
+
+.saved-recipe-list {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.saved-recipe-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.saved-recipe-item span {
+  display: block;
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.recipe-detail {
+  max-width: 760px;
+}
+
+.recipe-detail ul,
+.recipe-detail ol {
+  padding-left: 20px;
+}
+
+@media (max-width: 720px) {
+  .saved-recipe-item {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

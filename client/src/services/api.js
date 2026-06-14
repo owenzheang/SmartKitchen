@@ -82,3 +82,24 @@ export function generateRecipes(options) {
     body: JSON.stringify(options)
   });
 }
+
+export function saveRecipe(recipe) {
+  return request("/saved-recipes", {
+    method: "POST",
+    body: JSON.stringify({ recipe })
+  });
+}
+
+export function getSavedRecipes() {
+  return request("/saved-recipes");
+}
+
+export function getSavedRecipe(id) {
+  return request(`/saved-recipes/${id}`);
+}
+
+export function deleteSavedRecipe(id) {
+  return request(`/saved-recipes/${id}`, {
+    method: "DELETE"
+  });
+}

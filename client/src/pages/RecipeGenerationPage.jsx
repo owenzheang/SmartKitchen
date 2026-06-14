@@ -1,13 +1,14 @@
 ﻿import { useEffect, useState } from "react";
-import { generateRecipes, getIngredients } from "../services/api.js";
+import { generateRecipes, getIngredients, saveRecipe } from "../services/api.js";
 
-function RecipeGenerationPage({ onBack, onLogout }) {
+function RecipeGenerationPage({ onBack, onLogout, onSavedRecipes }) {
   const [ingredients, setIngredients] = useState([]);
   const [cuisine, setCuisine] = useState("Chinese");
   const [difficulty, setDifficulty] = useState("Easy");
   const [recipes, setRecipes] = useState([]);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [savingTitle, setSavingTitle] = useState("");
 
   useEffect(() => {
     async function loadIngredients() {
@@ -37,6 +38,20 @@ function RecipeGenerationPage({ onBack, onLogout }) {
     }
   }
 
+  async function handleSave(recipe) {
+    setMessage("");
+    setSavingTitle(recipe.title);
+
+    try {
+      await saveRecipe(recipe);
+      setMessage(`Saved ${recipe.title}.`);
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setSavingTitle("");
+    }
+  }
+
   return (
     <main className="app-page">
       <header className="app-header">
@@ -47,6 +62,9 @@ function RecipeGenerationPage({ onBack, onLogout }) {
         <div className="button-row">
           <button type="button" className="secondary-button" onClick={onBack}>
             Ingredients
+          </button>
+          <button type="button" className="secondary-button" onClick={onSavedRecipes}>
+            Saved Recipes
           </button>
           <button type="button" onClick={onLogout}>Logout</button>
         </div>
@@ -80,7 +98,7 @@ function RecipeGenerationPage({ onBack, onLogout }) {
           {ingredients.length === 0 && (
             <p className="message">Add ingredients before generating recipes.</p>
           )}
-          {message && <p className="message error">{message}</p>}
+          {message && <p className="message">{message}</p>}
         </section>
 
         <section className="panel">
@@ -127,6 +145,14 @@ function RecipeGenerationPage({ onBack, onLogout }) {
                     <li key={step}>{step}</li>
                   ))}
                 </ol>
+
+                <button
+                  type="button"
+                  onClick={() => handleSave(recipe)}
+                  disabled={savingTitle === recipe.title}
+                >
+                  {savingTitle === recipe.title ? "Saving..." : "Save Recipe"}
+                </button>
               </article>
             ))}
           </div>
