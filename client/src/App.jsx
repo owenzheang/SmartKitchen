@@ -22,6 +22,42 @@ function App() {
     setPage("recipeDetail");
   }
 
+  function renderWithNavigation(content) {
+    return (
+      <div className="app-shell">
+        <div className="phone-container">
+          {content}
+          <nav className="bottom-nav" aria-label="Main navigation">
+            <button
+              type="button"
+              className={page === "ingredients" ? "active" : ""}
+              onClick={() => setPage("ingredients")}
+            >
+              Ingredients
+            </button>
+            <button
+              type="button"
+              className={page === "recipes" ? "active" : ""}
+              onClick={() => setPage("recipes")}
+            >
+              Generate
+            </button>
+            <button
+              type="button"
+              className={page === "savedRecipes" || page === "recipeDetail" ? "active" : ""}
+              onClick={() => setPage("savedRecipes")}
+            >
+              Saved
+            </button>
+            <button type="button" onClick={handleLogout}>
+              Logout
+            </button>
+          </nav>
+        </div>
+      </div>
+    );
+  }
+
   if (page === "register") {
     return (
       <RegisterPage
@@ -32,7 +68,7 @@ function App() {
   }
 
   if (page === "recipes") {
-    return (
+    return renderWithNavigation(
       <RecipeGenerationPage
         onBack={() => setPage("ingredients")}
         onLogout={handleLogout}
@@ -42,7 +78,7 @@ function App() {
   }
 
   if (page === "savedRecipes") {
-    return (
+    return renderWithNavigation(
       <SavedRecipesPage
         onBack={() => setPage("ingredients")}
         onLogout={handleLogout}
@@ -52,7 +88,7 @@ function App() {
   }
 
   if (page === "recipeDetail") {
-    return (
+    return renderWithNavigation(
       <RecipeDetailPage
         savedRecipeId={selectedSavedRecipeId}
         onBack={() => setPage("savedRecipes")}
@@ -62,7 +98,7 @@ function App() {
   }
 
   if (page === "ingredients") {
-    return (
+    return renderWithNavigation(
       <IngredientsPage
         onGenerateRecipes={() => setPage("recipes")}
         onSavedRecipes={() => setPage("savedRecipes")}

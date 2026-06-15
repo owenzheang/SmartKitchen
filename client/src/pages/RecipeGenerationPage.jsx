@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState } from "react";
 import { generateRecipes, getIngredients, saveRecipe } from "../services/api.js";
 
-function RecipeGenerationPage({ onBack, onLogout, onSavedRecipes }) {
+function RecipeGenerationPage() {
   const [ingredients, setIngredients] = useState([]);
   const [cuisine, setCuisine] = useState("Chinese");
   const [difficulty, setDifficulty] = useState("Easy");
@@ -59,18 +59,9 @@ function RecipeGenerationPage({ onBack, onLogout, onSavedRecipes }) {
           <h1>SMARTKITCHEN</h1>
           <p>Recipe Generation</p>
         </div>
-        <div className="button-row">
-          <button type="button" className="secondary-button" onClick={onBack}>
-            Ingredients
-          </button>
-          <button type="button" className="secondary-button" onClick={onSavedRecipes}>
-            Saved Recipes
-          </button>
-          <button type="button" onClick={onLogout}>Logout</button>
-        </div>
       </header>
 
-      <section className="content-grid">
+      <section className="page-stack">
         <section className="panel form-stack">
           <h2>Generate Recipes</h2>
 

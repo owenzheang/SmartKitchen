@@ -12,7 +12,7 @@ const emptyForm = {
   unit: ""
 };
 
-function IngredientsPage({ onGenerateRecipes, onSavedRecipes, onLogout }) {
+function IngredientsPage() {
   const [ingredients, setIngredients] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
@@ -103,14 +103,9 @@ function IngredientsPage({ onGenerateRecipes, onSavedRecipes, onLogout }) {
           <h1>SMARTKITCHEN</h1>
           <p>My Ingredients</p>
         </div>
-        <div className="button-row">
-          <button type="button" onClick={onGenerateRecipes}>Generate Recipes</button>
-          <button type="button" className="secondary-button" onClick={onSavedRecipes}>Saved Recipes</button>
-          <button type="button" onClick={onLogout}>Logout</button>
-        </div>
       </header>
 
-      <section className="content-grid">
+      <section className="page-stack">
         <form className="panel form-stack" onSubmit={handleSubmit}>
           <h2>{editingId ? "Edit Ingredient" : "Add Ingredient"}</h2>
 

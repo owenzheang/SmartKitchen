@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState } from "react";
 import { deleteSavedRecipe, getSavedRecipes } from "../services/api.js";
 
-function SavedRecipesPage({ onBack, onLogout, onViewRecipe }) {
+function SavedRecipesPage({ onViewRecipe }) {
   const [savedRecipes, setSavedRecipes] = useState([]);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -42,12 +42,6 @@ function SavedRecipesPage({ onBack, onLogout, onViewRecipe }) {
         <div>
           <h1>SMARTKITCHEN</h1>
           <p>Saved Recipes</p>
-        </div>
-        <div className="button-row">
-          <button type="button" className="secondary-button" onClick={onBack}>
-            Ingredients
-          </button>
-          <button type="button" onClick={onLogout}>Logout</button>
         </div>
       </header>
 
