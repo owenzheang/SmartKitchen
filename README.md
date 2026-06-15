@@ -58,23 +58,23 @@ Replace these placeholder paths after adding screenshots to `docs/screenshots/`.
 
 ### Authentication
 
-![SMARTKITCHEN login page](docs/screenshots/login.png)
+![SMARTKITCHEN login page](screenshots/loginpage.png)
 
 ### Ingredient Management
 
-![SMARTKITCHEN ingredients page](docs/screenshots/ingredients.png)
+![SMARTKITCHEN ingredients page](screenshots/ingrepage.png)
 
 ### Recipe Generation
 
-![SMARTKITCHEN recipe generation page](docs/screenshots/recipe-generation.png)
+![SMARTKITCHEN recipe generation page](screenshots/genpage.png)
 
 ### Saved Recipes
 
-![SMARTKITCHEN saved recipes page](docs/screenshots/saved-recipes.png)
+![SMARTKITCHEN saved recipes page](screenshots/savepage.png)
 
 ### Recipe Detail
 
-![SMARTKITCHEN recipe detail page](docs/screenshots/recipe-detail.png)
+![SMARTKITCHEN recipe detail page](screenshots/detailpage.png)
 
 ## Local Setup
 
