@@ -1,5 +1,18 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { generateRecipes, getIngredients, saveRecipe } from "../services/api.js";
+
+const cuisineOptions = [
+  {
+    name: "Chinese",
+    icon: "//",
+    description: "Stir-fries, dumplings & more"
+  },
+  {
+    name: "Western",
+    icon: "W",
+    description: "Pasta, burgers & roasts"
+  }
+];
 
 function RecipeGenerationPage() {
   const [ingredients, setIngredients] = useState([]);
@@ -53,63 +66,123 @@ function RecipeGenerationPage() {
   }
 
   return (
-    <main className="app-page">
-      <header className="app-header">
-        <div>
-          <h1>SMARTKITCHEN</h1>
-          <p>Recipe Generation</p>
+    <main className="app-page generate-screen">
+      <header className="generate-topbar">
+        <button className="generate-back-button" type="button" aria-label="Back">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18 9 12l6-6" />
+            <path d="M9 12h12" />
+          </svg>
+        </button>
+
+        <div className="generate-title">
+          <span>SMARTKITCHEN</span>
+          <h1>Generate Recipes</h1>
+        </div>
+
+        <div className="generate-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M7.5 11.5c-1.3-.5-2.2-1.7-2.2-3.2A3.4 3.4 0 0 1 8.7 5c.7 0 1.3.2 1.8.5A4.2 4.2 0 0 1 18.3 8c1.4.6 2.4 1.9 2.4 3.5 0 1.8-1.2 3.3-2.8 3.8V20H7.5v-8.5Z" />
+            <path d="M7.5 16h10.4" />
+          </svg>
         </div>
       </header>
 
-      <section className="page-stack">
-        <section className="panel form-stack">
-          <h2>Generate Recipes</h2>
-
-          <label>
-            Cuisine
-            <select value={cuisine} onChange={(event) => setCuisine(event.target.value)}>
-              <option value="Chinese">Chinese</option>
-              <option value="Western">Western</option>
-            </select>
-          </label>
-
-          <label>
-            Preferred Difficulty
-            <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
-              <option value="Easy">Easy</option>
-              <option value="Medium">Medium</option>
-              <option value="Hard">Hard</option>
-            </select>
-          </label>
-
-          <button type="button" onClick={handleGenerate} disabled={isLoading || ingredients.length === 0}>
-            {isLoading ? "Generating..." : "Generate Recipes"}
-          </button>
-
-          {ingredients.length === 0 && (
-            <p className="message">Add ingredients before generating recipes.</p>
-          )}
-          {message && <p className="message">{message}</p>}
-        </section>
-
-        <section className="panel">
-          <h2>Available Ingredients</h2>
-          {ingredients.length === 0 ? (
-            <p className="empty-state">No ingredients yet.</p>
-          ) : (
-            <ul className="compact-list">
-              {ingredients.map((ingredient) => (
-                <li key={ingredient.id}>
-                  {ingredient.name} {ingredient.quantity ?? ""} {ingredient.unit ?? ""}
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+      <section className="generate-steps" aria-label="Recipe generation steps">
+        <div className="generate-step complete">
+          <span>✓</span>
+          <strong>Ingredients</strong>
+        </div>
+        <div className="generate-step-line"></div>
+        <div className="generate-step active">
+          <span>2</span>
+          <strong>Generate</strong>
+        </div>
       </section>
 
+      <section className="generate-ingredients-card">
+        <div className="generate-card-heading">
+          <span className="generate-leaf-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 19c9 0 14-5 14-14-9 0-14 5-14 14Z" />
+              <path d="M5 19c3-5 6-8 10-10" />
+            </svg>
+          </span>
+          <h2>Your ingredients</h2>
+          <strong>{ingredients.length} items</strong>
+        </div>
+
+        {ingredients.length === 0 ? (
+          <p className="empty-state">No ingredients yet.</p>
+        ) : (
+          <ul className="generate-ingredient-chips">
+            {ingredients.map((ingredient) => (
+              <li key={ingredient.id}>{ingredient.name}</li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="cuisine-card">
+        <div className="cuisine-card-title">
+          <span aria-hidden="true">Ψ</span>
+          <div>
+            <h2>Cuisine Style</h2>
+            <p>Pick one cuisine style</p>
+          </div>
+        </div>
+
+        <div className="cuisine-options">
+          {cuisineOptions.map((option) => {
+            const isSelected = cuisine === option.name;
+
+            return (
+              <button
+                key={option.name}
+                type="button"
+                className={isSelected ? "cuisine-option selected" : "cuisine-option"}
+                onClick={() => setCuisine(option.name)}
+              >
+                <span className="cuisine-icon">{option.icon}</span>
+                <span>
+                  <strong>{option.name}</strong>
+                  <small>{option.description}</small>
+                </span>
+                <span className="cuisine-check">{isSelected ? "✓" : "×"}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <label className="difficulty-control">
+          Difficulty
+          <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+        </label>
+
+        <p className="selected-cuisine-count">1 cuisine selected</p>
+      </section>
+
+      <button
+        className="generate-recipes-button"
+        type="button"
+        onClick={handleGenerate}
+        disabled={isLoading || ingredients.length === 0}
+      >
+        <span aria-hidden="true">✧</span>
+        {isLoading ? "Generating..." : "Generate Recipes"}
+      </button>
+
+      {ingredients.length === 0 && (
+        <p className="message">Add ingredients before generating recipes.</p>
+      )}
+      {message && <p className="message">{message}</p>}
+
       {recipes.length > 0 && (
-        <section className="recipe-results">
+        <section className="recipe-results generate-results">
           <h2>Recommended Recipes</h2>
           <div className="recipe-grid">
             {recipes.map((recipe) => (
