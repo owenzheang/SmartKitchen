@@ -1,15 +1,25 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
+import {
+  ArrowLeft,
+  ChefHat,
+  Check,
+  ChevronDown,
+  Leaf,
+  Sparkles,
+  Utensils,
+  X
+} from "lucide-react";
 import { generateRecipes, getIngredients, saveRecipe } from "../services/api.js";
 
 const cuisineOptions = [
   {
     name: "Chinese",
-    icon: "//",
+    emoji: "🥢",
     description: "Stir-fries, dumplings & more"
   },
   {
     name: "Western",
-    icon: "W",
+    emoji: "🍝",
     description: "Pasta, burgers & roasts"
   }
 ];
@@ -69,10 +79,7 @@ function RecipeGenerationPage() {
     <main className="app-page generate-screen">
       <header className="generate-topbar">
         <button className="generate-back-button" type="button" aria-label="Back">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M15 18 9 12l6-6" />
-            <path d="M9 12h12" />
-          </svg>
+          <ArrowLeft size={24} strokeWidth={1.9} aria-hidden="true" />
         </button>
 
         <div className="generate-title">
@@ -81,16 +88,13 @@ function RecipeGenerationPage() {
         </div>
 
         <div className="generate-logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M7.5 11.5c-1.3-.5-2.2-1.7-2.2-3.2A3.4 3.4 0 0 1 8.7 5c.7 0 1.3.2 1.8.5A4.2 4.2 0 0 1 18.3 8c1.4.6 2.4 1.9 2.4 3.5 0 1.8-1.2 3.3-2.8 3.8V20H7.5v-8.5Z" />
-            <path d="M7.5 16h10.4" />
-          </svg>
+          <ChefHat size={22} strokeWidth={1.8} />
         </div>
       </header>
 
       <section className="generate-steps" aria-label="Recipe generation steps">
         <div className="generate-step complete">
-          <span>✓</span>
+          <span><Check size={16} strokeWidth={2.4} aria-hidden="true" /></span>
           <strong>Ingredients</strong>
         </div>
         <div className="generate-step-line"></div>
@@ -103,10 +107,7 @@ function RecipeGenerationPage() {
       <section className="generate-ingredients-card">
         <div className="generate-card-heading">
           <span className="generate-leaf-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M5 19c9 0 14-5 14-14-9 0-14 5-14 14Z" />
-              <path d="M5 19c3-5 6-8 10-10" />
-            </svg>
+            <Leaf size={18} strokeWidth={1.8} />
           </span>
           <h2>Your ingredients</h2>
           <strong>{ingredients.length} items</strong>
@@ -125,7 +126,7 @@ function RecipeGenerationPage() {
 
       <section className="cuisine-card">
         <div className="cuisine-card-title">
-          <span aria-hidden="true">Ψ</span>
+          <span aria-hidden="true"><Utensils size={22} strokeWidth={1.9} /></span>
           <div>
             <h2>Cuisine Style</h2>
             <p>Pick one cuisine style</p>
@@ -143,24 +144,33 @@ function RecipeGenerationPage() {
                 className={isSelected ? "cuisine-option selected" : "cuisine-option"}
                 onClick={() => setCuisine(option.name)}
               >
-                <span className="cuisine-icon">{option.icon}</span>
+                <span className="cuisine-icon" aria-hidden="true">{option.emoji}</span>
                 <span>
                   <strong>{option.name}</strong>
                   <small>{option.description}</small>
                 </span>
-                <span className="cuisine-check">{isSelected ? "✓" : "×"}</span>
+                <span className="cuisine-check">
+                  {isSelected ? (
+                    <Check size={16} strokeWidth={2.5} aria-hidden="true" />
+                  ) : (
+                    <X size={14} strokeWidth={2.4} aria-hidden="true" />
+                  )}
+                </span>
               </button>
             );
           })}
         </div>
 
         <label className="difficulty-control">
-          Difficulty
-          <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
-          </select>
+          <span>Difficulty</span>
+          <div className="difficulty-select-shell">
+            <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)}>
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+            <ChevronDown size={18} strokeWidth={2.2} aria-hidden="true" />
+          </div>
         </label>
 
         <p className="selected-cuisine-count">1 cuisine selected</p>
@@ -172,7 +182,7 @@ function RecipeGenerationPage() {
         onClick={handleGenerate}
         disabled={isLoading || ingredients.length === 0}
       >
-        <span aria-hidden="true">✧</span>
+        <Sparkles size={24} strokeWidth={1.9} aria-hidden="true" />
         {isLoading ? "Generating..." : "Generate Recipes"}
       </button>
 

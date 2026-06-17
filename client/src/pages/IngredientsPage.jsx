@@ -178,7 +178,7 @@ function IngredientsPage({ onGenerateRecipes }) {
                   aria-label={`Delete ${ingredient.name}`}
                   onClick={() => handleDelete(ingredient.id)}
                 >
-                  <X size={9} strokeWidth={2.5} />
+                  <X size={9} strokeWidth={2.5} aria-hidden="true" />
                 </button>
               </li>
             ))}
@@ -197,7 +197,7 @@ function IngredientsPage({ onGenerateRecipes }) {
             required
           />
           <button type="submit" aria-label="Add ingredient">
-            <Plus size={16} strokeWidth={2.5} />
+            <Plus size={16} strokeWidth={2.5} aria-hidden="true" />
           </button>
         </form>
       </section>

@@ -1153,10 +1153,9 @@ h3 {
   width: 42px;
   height: 42px;
   border-radius: 13px;
-  color: #4caf50;
   background: #f5faf5;
-  font-size: 1rem;
-  font-weight: 900;
+  font-size: 1.45rem;
+  line-height: 1;
 }
 
 .cuisine-option strong,
@@ -1193,13 +1192,45 @@ h3 {
 }
 
 .difficulty-control {
+  display: grid;
+  gap: 8px;
   margin-top: 18px;
   color: #5d685f;
 }
 
-.difficulty-control select {
-  min-height: 48px;
-  border-radius: 14px;
+.difficulty-control > span {
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.difficulty-select-shell {
+  position: relative;
+  display: grid;
+  align-items: center;
+}
+
+.difficulty-select-shell select {
+  min-height: 52px;
+  appearance: none;
+  border: 1px solid #cfead2;
+  border-radius: 16px;
+  padding: 0 44px 0 16px;
+  color: #2e7d32;
+  background: linear-gradient(135deg, #f6fcf6 0%, #ffffff 100%);
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgb(76 175 80 / 8%);
+}
+
+.difficulty-select-shell select:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 4px rgb(76 175 80 / 12%);
+}
+
+.difficulty-select-shell svg {
+  position: absolute;
+  right: 16px;
+  color: #4caf50;
+  pointer-events: none;
 }
 
 .selected-cuisine-count {
@@ -1427,6 +1458,12 @@ h3 {
   color: #5f6963;
   font-size: 0.92rem;
   font-weight: 800;
+}
+
+.saved-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .saved-meta span + span {

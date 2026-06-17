@@ -1,4 +1,5 @@
 ﻿import { useState } from "react";
+import { ChefHat, Eye, EyeOff, Lock, Mail, Sparkles } from "lucide-react";
 import { loginUser, saveToken } from "../services/api.js";
 
 function LoginPage({ onLogin, onShowRegister }) {
@@ -29,11 +30,10 @@ function LoginPage({ onLogin, onShowRegister }) {
       <section className="auth-panel">
         <div className="login-brand">
           <div className="login-logo-placeholder" aria-label="SMARTKITCHEN logo placeholder">
-            <svg viewBox="0 0 48 48" role="img" aria-hidden="true">
-              <path d="M15 23.5c-3.2-.8-5.5-3.5-5.5-6.8 0-3.9 3.2-7.1 7.1-7.1 1.2 0 2.3.3 3.3.8A8.6 8.6 0 0 1 36.3 14c3.5.9 6.2 4 6.2 7.8 0 3.5-2.2 6.5-5.3 7.6V39H15V23.5Z" />
-              <path d="M15 31h22M15 36h22" />
-            </svg>
-            <span className="logo-spark" aria-hidden="true">+</span>
+            <ChefHat size={38} strokeWidth={2.4} aria-hidden="true" />
+            <span className="logo-spark" aria-hidden="true">
+              <Sparkles size={13} strokeWidth={2.4} />
+            </span>
           </div>
 
           <h1>
@@ -47,10 +47,7 @@ function LoginPage({ onLogin, onShowRegister }) {
           <label className="auth-field">
             Email address
             <div className="input-shell">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 6h16v12H4z" />
-                <path d="m4 7 8 6 8-6" />
-              </svg>
+              <Mail size={22} strokeWidth={1.9} aria-hidden="true" />
               <input
                 type="email"
                 value={email}
@@ -64,10 +61,7 @@ function LoginPage({ onLogin, onShowRegister }) {
           <label className="auth-field">
             Password
             <div className="input-shell">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M7 11V8a5 5 0 0 1 10 0v3" />
-                <path d="M5 11h14v9H5z" />
-              </svg>
+              <Lock size={22} strokeWidth={1.9} aria-hidden="true" />
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
@@ -81,21 +75,11 @@ function LoginPage({ onLogin, onShowRegister }) {
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 onClick={() => setShowPassword((currentValue) => !currentValue)}
               >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  {showPassword ? (
-                    <>
-                      <path d="M3 3l18 18" />
-                      <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
-                      <path d="M7.4 7.8C5.6 8.8 4.1 10.3 3 12c2.1 3.2 5.4 5 9 5 1.4 0 2.7-.3 3.9-.8" />
-                      <path d="M13.8 7.2C17 7.8 19.6 9.5 21 12c-.5.8-1.2 1.6-1.9 2.2" />
-                    </>
-                  ) : (
-                    <>
-                      <path d="M3 12c2.1-3.2 5.4-5 9-5s6.9 1.8 9 5c-2.1 3.2-5.4 5-9 5s-6.9-1.8-9-5Z" />
-                      <path d="M12 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z" />
-                    </>
-                  )}
-                </svg>
+                {showPassword ? (
+                  <EyeOff size={20} strokeWidth={1.9} aria-hidden="true" />
+                ) : (
+                  <Eye size={20} strokeWidth={1.9} aria-hidden="true" />
+                )}
               </button>
             </div>
           </label>
