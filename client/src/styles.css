@@ -436,38 +436,72 @@ h3 {
 }
 
 .ingredients-screen {
-  padding: 50px 38px 104px;
-  background: #eef7ee;
+  position: relative;
+  overflow: hidden;
+  padding: 54px 30px 104px;
+  background: linear-gradient(160deg, #f0ede8 0%, #e8f5e9 35%, #f5f5f0 100%);
+}
+
+.ingredients-screen > *:not(.ingredients-bg-blob) {
+  position: relative;
+  z-index: 1;
+}
+
+.ingredients-bg-blob {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ingredients-bg-blob.top {
+  top: -100px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  opacity: 0.25;
+  background: radial-gradient(circle, #81c784 0%, #4caf50 60%, transparent 100%);
+  filter: blur(60px);
+}
+
+.ingredients-bg-blob.bottom {
+  bottom: 80px;
+  left: -60px;
+  width: 224px;
+  height: 224px;
+  opacity: 0.15;
+  background: radial-gradient(circle, #f0e6d3 0%, #e8d5b7 60%, transparent 100%);
+  filter: blur(48px);
 }
 
 .ingredients-topbar {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  grid-template-columns: 36px minmax(0, 1fr) 36px;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 28px;
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
 .ingredients-logo,
 .notification-button {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
 }
 
 .ingredients-logo {
   color: #ffffff;
-  background: #4caf50;
-  box-shadow: 0 12px 22px rgb(76 175 80 / 24%);
+  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+  box-shadow: 0 4px 12px rgb(76 175 80 / 30%);
 }
 
 .ingredients-logo svg,
 .notification-button svg,
 .hero-icon svg,
 .leaf-icon svg,
-.ingredient-search-form svg {
+.ingredient-search-form > svg {
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -475,52 +509,56 @@ h3 {
 }
 
 .ingredients-logo svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   stroke-width: 1.8;
 }
 
 .ingredients-greeting span {
   display: block;
   margin-bottom: 2px;
-  color: #9ca4a0;
-  font-size: 0.86rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
+  color: #aaaaaa;
+  font-size: 0.69rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .ingredients-greeting h1 {
   margin-bottom: 0;
-  color: #111827;
-  font-size: 1.24rem;
+  color: #1a1a1a;
+  font-size: 1rem;
   line-height: 1.1;
+  letter-spacing: 0;
 }
 
 .notification-button {
   position: relative;
   padding: 0;
-  color: #111827;
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgb(32 49 38 / 8%);
+  border: 1px solid rgb(0 0 0 / 6%);
+  color: #555555;
+  background: rgb(255 255 255 / 65%);
+  box-shadow: none;
+  backdrop-filter: blur(12px);
 }
 
 .notification-button:hover {
-  color: #111827;
-  background: #ffffff;
+  color: #555555;
+  background: rgb(255 255 255 / 78%);
 }
 
 .notification-button svg {
-  width: 22px;
-  height: 22px;
+  width: 17px;
+  height: 17px;
   stroke-width: 1.8;
 }
 
 .notification-button span {
   position: absolute;
-  top: 10px;
-  right: 9px;
+  top: 6px;
+  right: 6px;
   width: 8px;
   height: 8px;
+  border: 1.5px solid #ffffff;
   border-radius: 50%;
   background: #4caf50;
 }
@@ -529,24 +567,24 @@ h3 {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 28px;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
 .step-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: #c4cbc6;
-  font-size: 0.92rem;
+  font-size: 0.75rem;
   font-weight: 800;
 }
 
 .step-item span {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: #e6ebe7;
 }
@@ -567,98 +605,102 @@ h3 {
 
 .ingredients-hero {
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
+  grid-template-columns: 40px minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
-  margin-bottom: 26px;
-  border-radius: 20px;
-  padding: 20px;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  padding: 16px;
   color: #ffffff;
-  background: #399a3d;
-  box-shadow: 0 18px 30px rgb(57 154 61 / 20%);
+  background: linear-gradient(130deg, #4caf50 0%, #388e3c 100%);
+  box-shadow: 0 6px 20px rgb(76 175 80 / 28%);
 }
 
 .hero-icon {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   background: rgb(255 255 255 / 20%);
 }
 
 .hero-icon svg {
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   stroke-width: 1.9;
 }
 
 .ingredients-hero h2 {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 0.82rem;
+  line-height: 1.2;
 }
 
 .ingredients-hero p {
   margin-bottom: 0;
-  color: rgb(255 255 255 / 88%);
-  font-size: 0.93rem;
+  color: rgb(255 255 255 / 75%);
+  font-size: 0.72rem;
 }
 
 .ingredients-card {
-  margin-bottom: 22px;
-  border-radius: 26px;
-  padding: 26px;
-  background: #ffffff;
-  box-shadow: 0 16px 35px rgb(32 49 38 / 8%);
+  margin-bottom: 16px;
+  border: 1px solid rgb(255 255 255 / 90%);
+  border-radius: 24px;
+  padding: 20px;
+  background: rgb(255 255 255 / 70%);
+  box-shadow: 0 4px 24px rgb(76 175 80 / 6%), 0 1px 4px rgb(0 0 0 / 4%);
+  backdrop-filter: blur(20px);
 }
 
 .ingredients-card-title {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .ingredients-card-title h2 {
   margin: 0;
-  color: #202124;
-  font-size: 1.14rem;
+  color: #1a1a1a;
+  font-size: 0.88rem;
 }
 
 .ingredients-card-title > strong {
   display: grid;
   place-items: center;
-  min-width: 28px;
-  height: 28px;
+  min-width: 26px;
+  height: 22px;
   margin-left: auto;
   border-radius: 999px;
   color: #4caf50;
   background: #e8f5e9;
-  font-size: 0.86rem;
+  font-size: 0.69rem;
 }
 
 .leaf-icon {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
   color: #4caf50;
-  background: #eff8f0;
+  background: #e8f5e9;
 }
 
 .leaf-icon svg {
-  width: 19px;
-  height: 19px;
-  stroke-width: 1.8;
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
 }
 
 .ingredient-chip-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 0 0 30px;
+  gap: 8px;
+  min-height: 40px;
+  margin: 0 0 16px;
   padding: 0;
   list-style: none;
 }
@@ -666,46 +708,49 @@ h3 {
 .ingredient-chip-list li {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  border: 1px solid #bfe6c2;
+  gap: 6px;
+  height: 32px;
+  border: 1px solid rgb(76 175 80 / 18%);
   border-radius: 999px;
-  padding: 8px 9px 8px 15px;
+  padding: 0 8px 0 12px;
   color: #2e7d32;
-  background: #eef9ef;
-  font-weight: 700;
+  background: rgb(76 175 80 / 9%);
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .ingredient-chip-list button {
   display: grid;
   place-items: center;
-  min-width: 22px;
-  width: 22px;
-  min-height: 22px;
-  height: 22px;
+  min-width: 16px;
+  width: 16px;
+  min-height: 16px;
+  height: 16px;
   border-radius: 50%;
   padding: 0;
   color: #4caf50;
-  background: #d8f2da;
-  font-size: 0.92rem;
+  background: rgb(76 175 80 / 15%);
+  font-size: 0.72rem;
   line-height: 1;
 }
 
 .ingredient-search-form {
   display: grid;
-  grid-template-columns: 24px minmax(0, 1fr) 42px;
+  grid-template-columns: 20px minmax(0, 1fr) 32px;
   align-items: center;
-  gap: 10px;
-  min-height: 58px;
-  border: 1px solid #dce8dd;
-  border-radius: 20px;
-  padding: 7px 8px 7px 15px;
-  background: #ffffff;
+  gap: 8px;
+  height: 46px;
+  min-height: 46px;
+  border: 1.5px solid rgb(76 175 80 / 15%);
+  border-radius: 16px;
+  padding: 0 7px 0 12px;
+  background: rgb(248 248 246 / 90%);
 }
 
 .ingredient-search-form svg {
-  width: 21px;
-  height: 21px;
-  color: #a8aea9;
+  width: 15px;
+  height: 15px;
+  color: #bbbbbb;
   stroke-width: 1.8;
 }
 
@@ -713,8 +758,8 @@ h3 {
   min-height: 42px;
   border: 0;
   padding: 0;
-  color: #303331;
-  font-size: 0.98rem;
+  color: #1a1a1a;
+  font-size: 0.88rem;
   background: transparent;
   box-shadow: none;
 }
@@ -730,15 +775,15 @@ h3 {
 .ingredient-search-form button {
   display: grid;
   place-items: center;
-  min-width: 42px;
-  width: 42px;
-  min-height: 42px;
-  height: 42px;
-  border-radius: 50%;
+  min-width: 32px;
+  width: 32px;
+  min-height: 32px;
+  height: 32px;
+  border-radius: 12px;
   padding: 0;
-  color: #a5aaa6;
-  background: #eef0ee;
-  font-size: 1.7rem;
+  color: #bbbbbb;
+  background: rgb(0 0 0 / 6%);
+  font-size: 1.15rem;
   line-height: 1;
 }
 
@@ -748,34 +793,39 @@ h3 {
 }
 
 .popular-section {
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .popular-section h2 {
-  margin: 0 0 12px;
-  color: #a2aaa5;
-  font-size: 0.92rem;
+  margin: 0 0 8px;
+  color: #aaaaaa;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .popular-chip-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .popular-chip-list button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  min-height: 38px;
-  border: 1px solid #e1e9e2;
+  gap: 4px;
+  height: 30px;
+  min-height: 30px;
+  border: 1px solid rgb(0 0 0 / 7%);
   border-radius: 999px;
-  padding: 8px 15px;
-  color: #555e58;
-  background: #ffffff;
-  font-weight: 700;
-  box-shadow: 0 5px 14px rgb(32 49 38 / 4%);
+  padding: 0 12px;
+  color: #555555;
+  background: rgb(255 255 255 / 65%);
+  font-size: 0.78rem;
+  font-weight: 500;
+  box-shadow: none;
+  backdrop-filter: blur(8px);
 }
 
 .popular-chip-list button:hover {
@@ -785,35 +835,42 @@ h3 {
 
 .popular-chip-list span {
   color: #4caf50;
-  font-size: 1.05rem;
+  font-size: 0.9rem;
+}
+
+.popular-chip-list svg {
+  color: #4caf50;
+  flex: 0 0 auto;
 }
 
 .ingredient-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-bottom: 30px;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
 .ingredient-stats article {
   display: grid;
   place-items: center;
-  min-height: 92px;
+  min-height: 70px;
   border-radius: 16px;
-  padding: 14px 8px;
-  background: #ffffff;
-  box-shadow: 0 10px 22px rgb(32 49 38 / 5%);
+  padding: 12px 8px;
+  border: 1px solid rgb(255 255 255 / 85%);
+  background: rgb(255 255 255 / 55%);
+  box-shadow: none;
+  backdrop-filter: blur(12px);
 }
 
 .ingredient-stats strong {
-  color: #202124;
-  font-size: 1.45rem;
+  color: #1a1a1a;
+  font-size: 1.12rem;
   line-height: 1;
 }
 
 .ingredient-stats span {
   color: #a1a7a3;
-  font-size: 0.78rem;
+  font-size: 0.63rem;
   text-align: center;
 }
 
@@ -823,10 +880,12 @@ h3 {
   justify-content: center;
   gap: 14px;
   width: 100%;
-  min-height: 72px;
-  border-radius: 18px;
-  font-size: 1.2rem;
-  box-shadow: 0 18px 28px rgb(76 175 80 / 25%);
+  min-height: 58px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 20px rgb(76 175 80 / 38%);
 }
 
 .generate-screen {
@@ -1569,12 +1628,12 @@ h3 {
   }
 
   .ingredients-screen {
-    padding-right: 28px;
-    padding-left: 28px;
+    padding-right: 20px;
+    padding-left: 20px;
   }
 
   .ingredients-card {
-    padding: 24px;
+    padding: 20px;
   }
 
   .generate-screen {

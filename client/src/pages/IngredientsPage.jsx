@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
 import {
+  ArrowRight,
+  Bell,
+  ChefHat,
+  Leaf,
+  Plus,
+  Search,
+  Sparkles,
+  X
+} from "lucide-react";
+import {
   addIngredient,
   deleteIngredient,
   getIngredients
@@ -10,6 +20,9 @@ const emptyForm = {
 };
 
 const popularIngredients = [
+  "Eggs",
+  "Tomato",
+  "Garlic",
   "Onion",
   "Rice",
   "Chicken",
@@ -17,7 +30,11 @@ const popularIngredients = [
   "Potato",
   "Spinach",
   "Carrot",
-  "Mushroom"
+  "Mushroom",
+  "Bell Pepper",
+  "Tofu",
+  "Soy Sauce",
+  "Ginger"
 ];
 
 function IngredientsPage({ onGenerateRecipes }) {
@@ -89,26 +106,30 @@ function IngredientsPage({ onGenerateRecipes }) {
     }
   }
 
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const ingredientNames = ingredients.map((ingredient) => ingredient.name);
+  const visiblePopularIngredients = popularIngredients
+    .filter((ingredient) => !ingredientNames.includes(ingredient))
+    .slice(0, 8);
+
   return (
     <main className="app-page ingredients-screen">
+      <div className="ingredients-bg-blob top" aria-hidden="true"></div>
+      <div className="ingredients-bg-blob bottom" aria-hidden="true"></div>
+
       <header className="ingredients-topbar">
         <div className="ingredients-logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M7.5 11.5c-1.3-.5-2.2-1.7-2.2-3.2A3.4 3.4 0 0 1 8.7 5c.7 0 1.3.2 1.8.5A4.2 4.2 0 0 1 18.3 8c1.4.6 2.4 1.9 2.4 3.5 0 1.8-1.2 3.3-2.8 3.8V20H7.5v-8.5Z" />
-            <path d="M7.5 16h10.4" />
-          </svg>
+          <ChefHat size={18} strokeWidth={1.8} />
         </div>
 
         <div className="ingredients-greeting">
           <span>SMARTKITCHEN</span>
-          <h1>Good afternoon, Chef!</h1>
+          <h1>{greeting}, Chef!</h1>
         </div>
 
         <button className="notification-button" type="button" aria-label="Notifications">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
-            <path d="M10 20a2 2 0 0 0 4 0" />
-          </svg>
+          <Bell size={17} strokeWidth={1.8} aria-hidden="true" />
           <span></span>
         </button>
       </header>
@@ -127,10 +148,7 @@ function IngredientsPage({ onGenerateRecipes }) {
 
       <section className="ingredients-hero">
         <div className="hero-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 3l1.6 5.1L19 10l-5.4 1.9L12 17l-1.6-5.1L5 10l5.4-1.9L12 3Z" />
-            <path d="M19 4v4M21 6h-4" />
-          </svg>
+          <Sparkles size={20} strokeWidth={1.8} />
         </div>
         <div>
           <h2>What's in your kitchen?</h2>
@@ -141,10 +159,7 @@ function IngredientsPage({ onGenerateRecipes }) {
       <section className="ingredients-card">
         <div className="ingredients-card-title">
           <span className="leaf-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M5 19c9 0 14-5 14-14-9 0-14 5-14 14Z" />
-              <path d="M5 19c3-5 6-8 10-10" />
-            </svg>
+            <Leaf size={14} strokeWidth={2} />
           </span>
           <h2>My Ingredients</h2>
           <strong>{ingredients.length}</strong>
@@ -163,7 +178,7 @@ function IngredientsPage({ onGenerateRecipes }) {
                   aria-label={`Delete ${ingredient.name}`}
                   onClick={() => handleDelete(ingredient.id)}
                 >
-                  x
+                  <X size={9} strokeWidth={2.5} />
                 </button>
               </li>
             ))}
@@ -173,10 +188,7 @@ function IngredientsPage({ onGenerateRecipes }) {
         )}
 
         <form className="ingredient-search-form" onSubmit={handleSubmit}>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m21 21-4.3-4.3" />
-            <circle cx="11" cy="11" r="7" />
-          </svg>
+          <Search size={15} strokeWidth={1.8} aria-hidden="true" />
           <input
             type="text"
             value={form.name}
@@ -185,7 +197,7 @@ function IngredientsPage({ onGenerateRecipes }) {
             required
           />
           <button type="submit" aria-label="Add ingredient">
-            +
+            <Plus size={16} strokeWidth={2.5} />
           </button>
         </form>
       </section>
@@ -193,13 +205,13 @@ function IngredientsPage({ onGenerateRecipes }) {
       <section className="popular-section">
         <h2>Popular</h2>
         <div className="popular-chip-list">
-          {popularIngredients.map((ingredient) => (
+          {visiblePopularIngredients.map((ingredient) => (
             <button
               key={ingredient}
               type="button"
               onClick={() => addIngredientByName(ingredient)}
             >
-              <span>+</span>
+              <Plus size={11} strokeWidth={2.5} aria-hidden="true" />
               {ingredient}
             </button>
           ))}
@@ -223,7 +235,7 @@ function IngredientsPage({ onGenerateRecipes }) {
 
       <button className="choose-cuisine-button" type="button" onClick={onGenerateRecipes}>
         Choose Cuisine
-        <span aria-hidden="true">=&gt;</span>
+        <ArrowRight size={18} strokeWidth={2.5} aria-hidden="true" />
       </button>
     </main>
   );
