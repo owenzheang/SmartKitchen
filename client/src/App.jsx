@@ -1,4 +1,5 @@
 ﻿import { useState } from "react";
+import { motion } from "motion/react";
 import IngredientsPage from "./pages/IngredientsPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RecipeDetailPage from "./pages/RecipeDetailPage.jsx";
@@ -28,30 +29,33 @@ function App() {
         <div className="phone-container">
           {content}
           <nav className="bottom-nav" aria-label="Main navigation">
-            <button
+            <motion.button
               type="button"
               className={page === "ingredients" ? "active" : ""}
               onClick={() => setPage("ingredients")}
+              whileTap={{ scale: 0.94 }}
             >
               Ingredients
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               type="button"
               className={page === "recipes" ? "active" : ""}
               onClick={() => setPage("recipes")}
+              whileTap={{ scale: 0.94 }}
             >
               Generate
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               type="button"
               className={page === "savedRecipes" || page === "recipeDetail" ? "active" : ""}
               onClick={() => setPage("savedRecipes")}
+              whileTap={{ scale: 0.94 }}
             >
               Saved
-            </button>
-            <button type="button" onClick={handleLogout}>
+            </motion.button>
+            <motion.button type="button" onClick={handleLogout} whileTap={{ scale: 0.94 }}>
               Logout
-            </button>
+            </motion.button>
           </nav>
         </div>
       </div>

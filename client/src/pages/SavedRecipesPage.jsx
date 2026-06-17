@@ -1,6 +1,13 @@
 ﻿import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, Bookmark, Clock, Trash2 } from "lucide-react";
 import { deleteSavedRecipe, getSavedRecipes } from "../services/api.js";
+
+const pageMotion = {
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.42, ease: [0.25, 0.46, 0.45, 0.94] }
+};
 
 function formatSavedDate(savedAt) {
   const savedDate = new Date(savedAt);
@@ -81,11 +88,21 @@ function SavedRecipesPage({ onViewRecipe }) {
   }
 
   return (
-    <main className="app-page saved-screen">
-      <header className="saved-topbar">
-        <button className="saved-back-button" type="button" aria-label="Back">
+    <motion.main className="app-page saved-screen" {...pageMotion}>
+      <motion.header
+        className="saved-topbar"
+        initial={{ opacity: 0, y: -14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.38 }}
+      >
+        <motion.button
+          className="saved-back-button"
+          type="button"
+          aria-label="Back"
+          whileTap={{ scale: 0.92 }}
+        >
           <ArrowLeft size={24} strokeWidth={1.9} aria-hidden="true" />
-        </button>
+        </motion.button>
 
         <div className="saved-title">
           <span>SMARTKITCHEN</span>
@@ -95,29 +112,49 @@ function SavedRecipesPage({ onViewRecipe }) {
         <div className="saved-bookmark" aria-hidden="true">
           <Bookmark size={22} strokeWidth={1.8} fill="currentColor" />
         </div>
-      </header>
+      </motion.header>
 
-      <p className="saved-summary">
+      <motion.p
+        className="saved-summary"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1, duration: 0.34 }}
+      >
         <strong>{savedRecipes.length} {savedRecipes.length === 1 ? "recipe" : "recipes"}</strong>
         {" "}saved in your collection
-      </p>
+      </motion.p>
 
       {isLoading && <p className="message">Loading saved recipes...</p>}
       {message && <p className="message">{message}</p>}
 
-      {!isLoading && savedRecipes.length === 0 && (
-        <section className="saved-empty-card">
-          <p>No saved recipes yet.</p>
-        </section>
-      )}
+      <AnimatePresence>
+        {!isLoading && savedRecipes.length === 0 && (
+          <motion.section
+            className="saved-empty-card"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+          >
+            <p>No saved recipes yet.</p>
+          </motion.section>
+        )}
+      </AnimatePresence>
 
-      <section className="saved-card-list">
+      <motion.section className="saved-card-list" layout>
+        <AnimatePresence initial={false}>
         {savedRecipes.map((savedRecipe) => {
           const recipe = savedRecipe.recipe;
           const matchScore = recipe.matchScore ?? 0;
 
           return (
-            <article key={savedRecipe.id} className="saved-recipe-card">
+            <motion.article
+              key={savedRecipe.id}
+              className="saved-recipe-card"
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, x: -36, transition: { duration: 0.22 } }}
+            >
               <div className="saved-image-placeholder">
                 <span className={`match-badge ${getMatchClass(matchScore)}`}>
                   {matchScore}% match
@@ -139,29 +176,32 @@ function SavedRecipesPage({ onViewRecipe }) {
                 </div>
 
                 <div className="saved-card-actions">
-                  <button
+                  <motion.button
                     type="button"
                     className="saved-delete-button"
                     aria-label={`Delete ${recipe.title}`}
                     onClick={() => handleDelete(savedRecipe.id)}
+                    whileTap={{ scale: 0.92 }}
                   >
                     <Trash2 size={21} strokeWidth={1.9} aria-hidden="true" />
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
                     type="button"
                     className="saved-view-button"
                     onClick={() => onViewRecipe(savedRecipe.id)}
+                    whileTap={{ scale: 0.97 }}
                   >
                     View Detail
-                  </button>
+                  </motion.button>
                 </div>
               </div>
-            </article>
+            </motion.article>
           );
         })}
-      </section>
-    </main>
+        </AnimatePresence>
+      </motion.section>
+    </motion.main>
   );
 }
 

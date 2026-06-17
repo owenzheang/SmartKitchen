@@ -1,6 +1,13 @@
 ﻿import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { ChefHat, Eye, EyeOff, Lock, Mail, Sparkles } from "lucide-react";
 import { loginUser, saveToken } from "../services/api.js";
+
+const authPanelMotion = {
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
+};
 
 function LoginPage({ onLogin, onShowRegister }) {
   const [email, setEmail] = useState("");
@@ -27,8 +34,13 @@ function LoginPage({ onLogin, onShowRegister }) {
 
   return (
     <main className="auth-page">
-      <section className="auth-panel">
-        <div className="login-brand">
+      <motion.section className="auth-panel" {...authPanelMotion}>
+        <motion.div
+          className="login-brand"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12, duration: 0.38 }}
+        >
           <div className="login-logo-placeholder" aria-label="SMARTKITCHEN logo placeholder">
             <ChefHat size={38} strokeWidth={2.4} aria-hidden="true" />
             <span className="logo-spark" aria-hidden="true">
@@ -41,9 +53,15 @@ function LoginPage({ onLogin, onShowRegister }) {
             <span>KITCHEN</span>
           </h1>
           <p>Cook smarter, every day</p>
-        </div>
+        </motion.div>
 
-        <form onSubmit={handleSubmit} className="form-stack">
+        <motion.form
+          onSubmit={handleSubmit}
+          className="form-stack"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.24, duration: 0.38 }}
+        >
           <label className="auth-field">
             Email address
             <div className="input-shell">
@@ -69,18 +87,19 @@ function LoginPage({ onLogin, onShowRegister }) {
                 placeholder="Password"
                 required
               />
-              <button
+              <motion.button
                 className="password-toggle"
                 type="button"
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 onClick={() => setShowPassword((currentValue) => !currentValue)}
+                whileTap={{ scale: 0.9 }}
               >
                 {showPassword ? (
                   <EyeOff size={20} strokeWidth={1.9} aria-hidden="true" />
                 ) : (
                   <Eye size={20} strokeWidth={1.9} aria-hidden="true" />
                 )}
-              </button>
+              </motion.button>
             </div>
           </label>
 
@@ -88,12 +107,23 @@ function LoginPage({ onLogin, onShowRegister }) {
             Forgot password?
           </button>
 
-          <button type="submit" disabled={isLoading}>
+          <motion.button type="submit" disabled={isLoading} whileTap={{ scale: 0.97 }}>
             {isLoading ? "Signing in..." : "Sign In"}
-          </button>
-        </form>
+          </motion.button>
+        </motion.form>
 
-        {message && <p className="message error">{message}</p>}
+        <AnimatePresence>
+          {message && (
+            <motion.p
+              className="message error"
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+            >
+              {message}
+            </motion.p>
+          )}
+        </AnimatePresence>
 
         <div className="auth-divider">
           <span></span>
@@ -101,14 +131,19 @@ function LoginPage({ onLogin, onShowRegister }) {
           <span></span>
         </div>
 
-        <button className="link-button" type="button" onClick={onShowRegister}>
+        <motion.button
+          className="link-button"
+          type="button"
+          onClick={onShowRegister}
+          whileTap={{ scale: 0.97 }}
+        >
           Create an Account
-        </button>
+        </motion.button>
 
         <p className="auth-terms">
           By continuing, you agree to our Terms of Service and Privacy Policy
         </p>
-      </section>
+      </motion.section>
     </main>
   );
 }

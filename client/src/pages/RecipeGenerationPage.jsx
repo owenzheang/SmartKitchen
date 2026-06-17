@@ -1,4 +1,5 @@
 ﻿import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
   ChefHat,
@@ -10,6 +11,19 @@ import {
   X
 } from "lucide-react";
 import { generateRecipes, getIngredients, saveRecipe } from "../services/api.js";
+
+const pageMotion = {
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.42, ease: [0.25, 0.46, 0.45, 0.94] }
+};
+
+const cardMotion = {
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 },
+  transition: { duration: 0.28 }
+};
 
 const cuisineOptions = [
   {
@@ -76,11 +90,21 @@ function RecipeGenerationPage() {
   }
 
   return (
-    <main className="app-page generate-screen">
-      <header className="generate-topbar">
-        <button className="generate-back-button" type="button" aria-label="Back">
+    <motion.main className="app-page generate-screen" {...pageMotion}>
+      <motion.header
+        className="generate-topbar"
+        initial={{ opacity: 0, y: -14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.38 }}
+      >
+        <motion.button
+          className="generate-back-button"
+          type="button"
+          aria-label="Back"
+          whileTap={{ scale: 0.92 }}
+        >
           <ArrowLeft size={24} strokeWidth={1.9} aria-hidden="true" />
-        </button>
+        </motion.button>
 
         <div className="generate-title">
           <span>SMARTKITCHEN</span>
@@ -90,9 +114,15 @@ function RecipeGenerationPage() {
         <div className="generate-logo" aria-hidden="true">
           <ChefHat size={22} strokeWidth={1.8} />
         </div>
-      </header>
+      </motion.header>
 
-      <section className="generate-steps" aria-label="Recipe generation steps">
+      <motion.section
+        className="generate-steps"
+        aria-label="Recipe generation steps"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.08, duration: 0.34 }}
+      >
         <div className="generate-step complete">
           <span><Check size={16} strokeWidth={2.4} aria-hidden="true" /></span>
           <strong>Ingredients</strong>
@@ -102,9 +132,9 @@ function RecipeGenerationPage() {
           <span>2</span>
           <strong>Generate</strong>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="generate-ingredients-card">
+      <motion.section className="generate-ingredients-card" {...cardMotion}>
         <div className="generate-card-heading">
           <span className="generate-leaf-icon" aria-hidden="true">
             <Leaf size={18} strokeWidth={1.8} />
@@ -118,13 +148,25 @@ function RecipeGenerationPage() {
         ) : (
           <ul className="generate-ingredient-chips">
             {ingredients.map((ingredient) => (
-              <li key={ingredient.id}>{ingredient.name}</li>
+              <motion.li
+                key={ingredient.id}
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.18 }}
+              >
+                {ingredient.name}
+              </motion.li>
             ))}
           </ul>
         )}
-      </section>
+      </motion.section>
 
-      <section className="cuisine-card">
+      <motion.section
+        className="cuisine-card"
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15, duration: 0.42 }}
+      >
         <div className="cuisine-card-title">
           <span aria-hidden="true"><Utensils size={22} strokeWidth={1.9} /></span>
           <div>
@@ -138,11 +180,12 @@ function RecipeGenerationPage() {
             const isSelected = cuisine === option.name;
 
             return (
-              <button
+              <motion.button
                 key={option.name}
                 type="button"
                 className={isSelected ? "cuisine-option selected" : "cuisine-option"}
                 onClick={() => setCuisine(option.name)}
+                whileTap={{ scale: 0.97 }}
               >
                 <span className="cuisine-icon" aria-hidden="true">{option.emoji}</span>
                 <span>
@@ -156,7 +199,7 @@ function RecipeGenerationPage() {
                     <X size={14} strokeWidth={2.4} aria-hidden="true" />
                   )}
                 </span>
-              </button>
+              </motion.button>
             );
           })}
         </div>
@@ -174,29 +217,43 @@ function RecipeGenerationPage() {
         </label>
 
         <p className="selected-cuisine-count">1 cuisine selected</p>
-      </section>
+      </motion.section>
 
-      <button
+      <motion.button
         className="generate-recipes-button"
         type="button"
         onClick={handleGenerate}
         disabled={isLoading || ingredients.length === 0}
+        whileTap={{ scale: 0.97 }}
       >
         <Sparkles size={24} strokeWidth={1.9} aria-hidden="true" />
         {isLoading ? "Generating..." : "Generate Recipes"}
-      </button>
+      </motion.button>
 
       {ingredients.length === 0 && (
         <p className="message">Add ingredients before generating recipes.</p>
       )}
       {message && <p className="message">{message}</p>}
 
-      {recipes.length > 0 && (
-        <section className="recipe-results generate-results">
-          <h2>Recommended Recipes</h2>
-          <div className="recipe-grid">
-            {recipes.map((recipe) => (
-              <article key={recipe.title} className="panel recipe-card">
+      <AnimatePresence>
+        {recipes.length > 0 && (
+          <motion.section
+            className="recipe-results generate-results"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
+            <h2>Recommended Recipes</h2>
+            <div className="recipe-grid">
+              {recipes.map((recipe, index) => (
+                <motion.article
+                  key={recipe.title}
+                  className="panel recipe-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ delay: index * 0.06, duration: 0.3 }}
+                >
                 <div className="recipe-card-header">
                   <h3>{recipe.title}</h3>
                   <span>{recipe.matchScore}% match</span>
@@ -220,19 +277,21 @@ function RecipeGenerationPage() {
                   ))}
                 </ol>
 
-                <button
+                <motion.button
                   type="button"
                   onClick={() => handleSave(recipe)}
                   disabled={savingTitle === recipe.title}
+                  whileTap={{ scale: 0.97 }}
                 >
                   {savingTitle === recipe.title ? "Saving..." : "Save Recipe"}
-                </button>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
-    </main>
+                </motion.button>
+                </motion.article>
+              ))}
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
+    </motion.main>
   );
 }
 
