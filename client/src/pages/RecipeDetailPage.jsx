@@ -1,5 +1,6 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import { ArrowLeft, ChefHat, Clock, Leaf } from "lucide-react";
 import { getSavedRecipe } from "../services/api.js";
 
 const pageMotion = {
@@ -7,6 +8,35 @@ const pageMotion = {
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.42, ease: [0.25, 0.46, 0.45, 0.94] }
 };
+
+const difficultyDotCounts = {
+  Easy: 1,
+  Medium: 2,
+  Hard: 3
+};
+
+const leadingQuantityPattern =
+  /^(\d+([./]\d+)?|\d+\s+\d+\/\d+)\s*(g|kg|mg|ml|l|oz|lb|lbs|cup|cups|tbsp|tsp|tablespoon|tablespoons|teaspoon|teaspoons|clove|cloves|piece|pieces|slice|slices|can|cans)?\s*/i;
+
+function DifficultyDots({ difficulty }) {
+  const level = difficulty || "Easy";
+  const count = difficultyDotCounts[level] || 1;
+
+  return (
+    <span className={`difficulty-dots ${level.toLowerCase()}`} aria-hidden="true">
+      {Array.from({ length: count }).map((_, index) => (
+        <span key={index}></span>
+      ))}
+    </span>
+  );
+}
+
+function formatIngredientName(ingredient) {
+  const withoutQuantity = ingredient.replace(leadingQuantityPattern, "").trim();
+  const name = withoutQuantity || ingredient;
+
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
 
 function RecipeDetailPage({ savedRecipeId, onBack }) {
   const [savedRecipe, setSavedRecipe] = useState(null);
@@ -34,24 +64,30 @@ function RecipeDetailPage({ savedRecipeId, onBack }) {
   const recipe = savedRecipe?.recipe;
 
   return (
-    <motion.main className="app-page" {...pageMotion}>
+    <motion.main className="app-page recipe-detail-screen" {...pageMotion}>
       <motion.header
-        className="app-header compact-header"
+        className="recipe-detail-topbar"
         initial={{ opacity: 0, y: -14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.38 }}
       >
         <motion.button
           type="button"
-          className="back-button"
+          className="recipe-detail-back-button"
+          aria-label="Back to saved recipes"
           onClick={onBack}
-          whileTap={{ scale: 0.94 }}
+          whileTap={{ scale: 0.92 }}
         >
-          Back
+          <ArrowLeft size={23} strokeWidth={1.9} aria-hidden="true" />
         </motion.button>
-        <div>
-          <h1>SMARTKITCHEN</h1>
-          <p>Recipe Detail</p>
+
+        <div className="recipe-detail-titlebar">
+          <span>SMARTKITCHEN</span>
+          <h1>Recipe Detail</h1>
+        </div>
+
+        <div className="recipe-detail-logo" aria-hidden="true">
+          <ChefHat size={21} strokeWidth={1.8} />
         </div>
       </motion.header>
 
@@ -60,49 +96,80 @@ function RecipeDetailPage({ savedRecipeId, onBack }) {
 
       {recipe && (
         <motion.article
-          className="panel recipe-detail"
+          className="recipe-detail-layout"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.32 }}
         >
-          <div className="recipe-card-header">
+          <section className="recipe-detail-image-placeholder" aria-label="Recipe image placeholder">
+            <span>{recipe.cuisine}</span>
+          </section>
+
+          <section className="recipe-detail-summary-card">
+            <div className="recipe-detail-badges">
+              <span className="recipe-cuisine-badge">{recipe.cuisine}</span>
+              <span className="recipe-difficulty-badge">
+                <DifficultyDots difficulty={recipe.difficulty} />
+                {recipe.difficulty}
+              </span>
+            </div>
+
             <h2>{recipe.title}</h2>
-            <span>{recipe.matchScore}% match</span>
-          </div>
 
-          <p>{recipe.cuisine} | {recipe.difficulty} | {recipe.cookTime}</p>
-          <p>Saved: {savedRecipe.savedAt}</p>
+            <div className="recipe-detail-info-grid" aria-label="Recipe information">
+              <article>
+                <Clock size={18} strokeWidth={1.9} aria-hidden="true" />
+                <strong>{recipe.cookTime}</strong>
+                <span>Cook time</span>
+              </article>
+            </div>
+          </section>
 
-          <h3>Missing Ingredients</h3>
-          <p>{recipe.missingIngredients.length > 0 ? recipe.missingIngredients.join(", ") : "None"}</p>
+          <section className="recipe-detail-section">
+            <div className="recipe-detail-section-heading">
+              <span aria-hidden="true">
+                <Leaf size={15} strokeWidth={2} />
+              </span>
+              <h3>Ingredients</h3>
+              <strong>{recipe.ingredients.length}</strong>
+            </div>
 
-          <h3>Ingredients</h3>
-          <ul>
-            {recipe.ingredients.map((ingredient, index) => (
-              <motion.li
-                key={ingredient}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.03, duration: 0.18 }}
-              >
-                {ingredient}
-              </motion.li>
-            ))}
-          </ul>
+            <ul className="recipe-detail-ingredient-list">
+              {recipe.ingredients.map((ingredient, index) => (
+                <motion.li
+                  key={ingredient}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.03, duration: 0.18 }}
+                >
+                  {formatIngredientName(ingredient)}
+                </motion.li>
+              ))}
+            </ul>
+          </section>
 
-          <h3>Steps</h3>
-          <ol>
-            {recipe.steps.map((step, index) => (
-              <motion.li
-                key={step}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.04, duration: 0.18 }}
-              >
-                {step}
-              </motion.li>
-            ))}
-          </ol>
+          <section className="recipe-detail-section">
+            <div className="recipe-detail-section-heading">
+              <span aria-hidden="true">
+                <ChefHat size={15} strokeWidth={2} />
+              </span>
+              <h3>Steps</h3>
+            </div>
+
+            <ol className="recipe-detail-step-list">
+              {recipe.steps.map((step, index) => (
+                <motion.li
+                  key={step}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.04, duration: 0.2 }}
+                >
+                  <span>{index + 1}</span>
+                  <p>{step}</p>
+                </motion.li>
+              ))}
+            </ol>
+          </section>
         </motion.article>
       )}
     </motion.main>

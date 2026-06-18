@@ -13,7 +13,8 @@ import {
 import {
   addIngredient,
   deleteIngredient,
-  getIngredients
+  getIngredients,
+  getSavedRecipes
 } from "../services/api.js";
 
 const emptyForm = {
@@ -53,6 +54,7 @@ const popularIngredients = [
 
 function IngredientsPage({ onGenerateRecipes }) {
   const [ingredients, setIngredients] = useState([]);
+  const [savedRecipeCount, setSavedRecipeCount] = useState(0);
   const [form, setForm] = useState(emptyForm);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -73,7 +75,17 @@ function IngredientsPage({ onGenerateRecipes }) {
 
   useEffect(() => {
     loadIngredients();
+    loadSavedRecipeCount();
   }, []);
+
+  async function loadSavedRecipeCount() {
+    try {
+      const data = await getSavedRecipes();
+      setSavedRecipeCount(data.length);
+    } catch {
+      setSavedRecipeCount(0);
+    }
+  }
 
   function resetForm() {
     setForm(emptyForm);
@@ -229,7 +241,7 @@ function IngredientsPage({ onGenerateRecipes }) {
         <AnimatePresence>
           {!isLoading && ingredients.length === 0 && (
             <motion.p
-              className="empty-state"
+              className="empty-state ingredients-empty-state"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -284,12 +296,8 @@ function IngredientsPage({ onGenerateRecipes }) {
         transition={{ delay: 0.35, duration: 0.36 }}
       >
         <motion.article whileTap={{ scale: 0.98 }}>
-          <strong>12</strong>
+          <strong>{savedRecipeCount}</strong>
           <span>Recipes saved</span>
-        </motion.article>
-        <motion.article whileTap={{ scale: 0.98 }}>
-          <strong>4</strong>
-          <span>Cooked this week</span>
         </motion.article>
         <motion.article whileTap={{ scale: 0.98 }}>
           <strong>{ingredients.length}</strong>

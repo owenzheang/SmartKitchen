@@ -38,7 +38,25 @@ const cuisineOptions = [
   }
 ];
 
-function RecipeGenerationPage() {
+const difficultyDotCounts = {
+  Easy: 1,
+  Medium: 2,
+  Hard: 3
+};
+
+function DifficultyDots({ difficulty }) {
+  const count = difficultyDotCounts[difficulty] || 1;
+
+  return (
+    <span className={`difficulty-dots ${difficulty.toLowerCase()}`} aria-hidden="true">
+      {Array.from({ length: count }).map((_, index) => (
+        <span key={index}></span>
+      ))}
+    </span>
+  );
+}
+
+function RecipeGenerationPage({ onBack }) {
   const [ingredients, setIngredients] = useState([]);
   const [cuisine, setCuisine] = useState("Chinese");
   const [difficulty, setDifficulty] = useState("Easy");
@@ -101,6 +119,7 @@ function RecipeGenerationPage() {
           className="generate-back-button"
           type="button"
           aria-label="Back"
+          onClick={onBack}
           whileTap={{ scale: 0.92 }}
         >
           <ArrowLeft size={24} strokeWidth={1.9} aria-hidden="true" />
@@ -258,7 +277,16 @@ function RecipeGenerationPage() {
                   <h3>{recipe.title}</h3>
                   <span>{recipe.matchScore}% match</span>
                 </div>
-                <p>{recipe.cuisine} | {recipe.difficulty} | {recipe.cookTime}</p>
+                <p className="recipe-card-meta">
+                  <span>{recipe.cuisine}</span>
+                  <span className="meta-separator">|</span>
+                  <span className="difficulty-indicator">
+                    <DifficultyDots difficulty={recipe.difficulty} />
+                    {recipe.difficulty}
+                  </span>
+                  <span className="meta-separator">|</span>
+                  <span>{recipe.cookTime}</span>
+                </p>
 
                 <h4>Missing Ingredients</h4>
                 <p>{recipe.missingIngredients.length > 0 ? recipe.missingIngredients.join(", ") : "None"}</p>

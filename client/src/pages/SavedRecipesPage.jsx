@@ -26,11 +26,11 @@ function formatSavedDate(savedAt) {
   const dayDifference = Math.round((startOfToday - startOfSavedDate) / 86400000);
 
   if (dayDifference === 0) {
-    return "Saved today";
+    return "today";
   }
 
-  if (dayDifference === 1) {
-    return "Saved yesterday";
+  if (dayDifference > 0 && dayDifference < 7) {
+    return `${dayDifference}d ago`;
   }
 
   return savedDate.toLocaleDateString("en-US", {
@@ -38,6 +38,10 @@ function formatSavedDate(savedAt) {
     day: "numeric",
     year: "numeric"
   });
+}
+
+function formatCookTime(cookTime) {
+  return cookTime.replace(/\bminutes\b/i, "min").replace(/\bminute\b/i, "min");
 }
 
 function getMatchClass(matchScore) {
@@ -52,7 +56,25 @@ function getMatchClass(matchScore) {
   return "low";
 }
 
-function SavedRecipesPage({ onViewRecipe }) {
+const difficultyDotCounts = {
+  Easy: 1,
+  Medium: 2,
+  Hard: 3
+};
+
+function DifficultyDots({ difficulty }) {
+  const count = difficultyDotCounts[difficulty] || 1;
+
+  return (
+    <span className={`difficulty-dots ${difficulty.toLowerCase()}`} aria-hidden="true">
+      {Array.from({ length: count }).map((_, index) => (
+        <span key={index}></span>
+      ))}
+    </span>
+  );
+}
+
+function SavedRecipesPage({ onBack, onViewRecipe }) {
   const [savedRecipes, setSavedRecipes] = useState([]);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -99,6 +121,7 @@ function SavedRecipesPage({ onViewRecipe }) {
           className="saved-back-button"
           type="button"
           aria-label="Back"
+          onClick={onBack}
           whileTap={{ scale: 0.92 }}
         >
           <ArrowLeft size={24} strokeWidth={1.9} aria-hidden="true" />
@@ -165,14 +188,16 @@ function SavedRecipesPage({ onViewRecipe }) {
               <div className="saved-card-body">
                 <div className="saved-tags">
                   <span>{recipe.cuisine}</span>
-                  <span>{recipe.difficulty}</span>
                 </div>
 
                 <h2>{recipe.title}</h2>
 
                 <div className="saved-meta">
-                  <span><Clock size={15} strokeWidth={1.9} aria-hidden="true" /> {recipe.cookTime}</span>
-                  <span>{recipe.difficulty}</span>
+                  <span><Clock size={15} strokeWidth={1.9} aria-hidden="true" /> {formatCookTime(recipe.cookTime)}</span>
+                  <span className="difficulty-indicator">
+                    <DifficultyDots difficulty={recipe.difficulty} />
+                    {recipe.difficulty}
+                  </span>
                 </div>
 
                 <div className="saved-card-actions">
