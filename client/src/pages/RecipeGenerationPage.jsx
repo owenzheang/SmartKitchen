@@ -187,7 +187,7 @@ function RecipeGenerationPage({ onBack }) {
         transition={{ delay: 0.15, duration: 0.42 }}
       >
         <div className="cuisine-card-title">
-          <span aria-hidden="true"><Utensils size={22} strokeWidth={1.9} /></span>
+          <span aria-hidden="true"><Utensils size={18} strokeWidth={1.9} /></span>
           <div>
             <h2>Cuisine Style</h2>
             <p>Pick one cuisine style</p>

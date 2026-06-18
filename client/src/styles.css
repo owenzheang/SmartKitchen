@@ -958,15 +958,16 @@ h3 {
   display: block;
   margin-bottom: 2px;
   color: #9ca4a0;
-  font-size: 0.86rem;
+  font-size: 0.69rem;
   font-weight: 550;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 
 .generate-title h1 {
+  margin-top: 10px;
   margin-bottom: 0;
   color: #111827;
-  font-size: 1.22rem;
+  font-size: 1.00rem;
   line-height: 1.05;
 }
 
@@ -1010,6 +1011,8 @@ h3 {
 
 .generate-step.complete {
   color: #a4dca8;
+  font-weight: 530;
+  letter-spacing: 0.02em;
 }
 
 .generate-step.complete span,
@@ -1020,6 +1023,8 @@ h3 {
 
 .generate-step.active {
   color: #3da846;
+  font-weight: 530;
+  letter-spacing: 0.02em;
 }
 
 .generate-step-line {
@@ -1092,8 +1097,8 @@ h3 {
   padding: 8px 14px;
   color: #2e7d32;
   background: #eef9ef;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 520;
 }
 
 .cuisine-card {
@@ -1112,8 +1117,8 @@ h3 {
 .cuisine-card-title > span {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   color: #4caf50;
   background: #e8f5e9;
@@ -1124,13 +1129,13 @@ h3 {
 .cuisine-card-title h2 {
   margin-bottom: 5px;
   color: #202124;
-  font-size: 1.04rem;
+  font-size: 0.90rem;
 }
 
 .cuisine-card-title p {
   margin-bottom: 0;
   color: #a0a7a3;
-  font-size: 0.88rem;
+  font-size: 0.80rem;
   font-weight: 700;
 }
 
@@ -1183,7 +1188,8 @@ h3 {
 
 .cuisine-option strong {
   margin-bottom: 4px;
-  font-size: 0.94rem;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .cuisine-option small {
@@ -1218,7 +1224,8 @@ h3 {
 
 .difficulty-control > span {
   font-size: 0.88rem;
-  font-weight: 800;
+  font-weight: 600;
+  margin-bottom: 5px;
 }
 
 .difficulty-select-shell {
@@ -1235,7 +1242,7 @@ h3 {
   padding: 0 44px 0 16px;
   color: #2e7d32;
   background: linear-gradient(135deg, #f6fcf6 0%, #ffffff 100%);
-  font-weight: 800;
+  font-weight: 550;
   box-shadow: 0 8px 18px rgb(76 175 80 / 8%);
 }
 
@@ -1255,7 +1262,7 @@ h3 {
   margin: 18px 0 0;
   color: #4caf50;
   font-size: 0.84rem;
-  font-weight: 800;
+  font-weight: 700;
   text-align: center;
 }
 
