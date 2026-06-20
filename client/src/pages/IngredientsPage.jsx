@@ -155,7 +155,7 @@ function IngredientsPage({ onGenerateRecipes }) {
         </div>
 
         <div className="ingredients-greeting">
-          <span>SMARTKITCHEN</span>
+          <span>CHEFSPARK</span>
           <h1>{greeting}, Chef!</h1>
         </div>
 

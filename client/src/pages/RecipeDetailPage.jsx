@@ -82,7 +82,7 @@ function RecipeDetailPage({ savedRecipeId, onBack }) {
         </motion.button>
 
         <div className="recipe-detail-titlebar">
-          <span>SMARTKITCHEN</span>
+          <span>CHEFSPARK</span>
           <h1>Recipe Detail</h1>
         </div>
 

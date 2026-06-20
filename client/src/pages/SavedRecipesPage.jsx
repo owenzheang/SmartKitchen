@@ -128,7 +128,7 @@ function SavedRecipesPage({ onBack, onViewRecipe }) {
         </motion.button>
 
         <div className="saved-title">
-          <span>SMARTKITCHEN</span>
+          <span>CHEFSPARK</span>
           <h1>Saved Recipes</h1>
         </div>
 

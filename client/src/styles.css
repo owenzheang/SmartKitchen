@@ -177,10 +177,7 @@ h3 {
   box-shadow: 0 18px 45px rgb(32 49 38 / 10%);
 }
 
-.auth-panel h1 {
-  font-size: 1.72rem;
-  line-height: 1;
-}
+
 
 .link-button {
   width: 100%;
@@ -222,7 +219,7 @@ h3 {
   height: 38px;
   fill: none;
   stroke: #ffffff;
-  stroke-width: 2.7;
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -314,6 +311,7 @@ h3 {
 
 .input-shell input::placeholder {
   color: #989d99;
+  letter-spacing: 0.05em;
 }
 
 .password-toggle {

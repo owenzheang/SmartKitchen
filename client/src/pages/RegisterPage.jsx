@@ -49,8 +49,8 @@ function RegisterPage({ onRegister, onShowLogin }) {
           </div>
 
           <h1>
-            <span>SMART</span>
-            <span>KITCHEN</span>
+            <span>CHEF</span>
+            <span>SPARK</span>
           </h1>
           <p>Create your kitchen account</p>
         </motion.div>

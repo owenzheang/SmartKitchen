@@ -126,7 +126,7 @@ function RecipeGenerationPage({ onBack }) {
         </motion.button>
 
         <div className="generate-title">
-          <span>SMARTKITCHEN</span>
+          <span>CHEFSPARK</span>
           <h1>Generate Recipes</h1>
         </div>
 

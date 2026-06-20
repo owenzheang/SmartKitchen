@@ -43,16 +43,13 @@ function LoginPage({ onLogin, onShowRegister }) {
         >
           <div className="login-logo-placeholder" aria-label="SMARTKITCHEN logo placeholder">
             <ChefHat size={38} strokeWidth={2.4} aria-hidden="true" />
-            <span className="logo-spark" aria-hidden="true">
-              <Sparkles size={13} strokeWidth={2.4} />
-            </span>
           </div>
 
           <h1>
-            <span>SMART</span>
-            <span>KITCHEN</span>
+            <span>CHEF</span>
+            <span>SPARK</span>
           </h1>
-          <p>Cook smarter, every day</p>
+          
         </motion.div>
 
         <motion.form
