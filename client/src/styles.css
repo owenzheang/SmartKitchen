@@ -214,14 +214,11 @@ h3 {
   box-shadow: 0 14px 28px rgb(76 175 80 / 32%);
 }
 
-.login-logo-placeholder svg {
-  width: 38px;
-  height: 38px;
-  fill: none;
-  stroke: #ffffff;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.login-logo-placeholder img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
 }
 
 .logo-spark {
@@ -1403,6 +1400,7 @@ h3 {
 .saved-image-placeholder {
   position: relative;
   min-height: 188px;
+  overflow: hidden;
   background:
     radial-gradient(circle at 54% 38%, rgb(255 255 255 / 80%) 0 14%, transparent 15%),
     radial-gradient(circle at 76% 50%, rgb(166 91 40 / 55%) 0 18%, transparent 19%),
@@ -1410,9 +1408,30 @@ h3 {
     linear-gradient(135deg, #b7d5a0 0%, #f5f1d5 44%, #8fbe75 100%);
 }
 
+.saved-image-placeholder img,
+.recipe-card-image img,
+.recipe-detail-image-placeholder img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.saved-image-placeholder.has-image::after,
+.recipe-card-image.has-image::after,
+.recipe-detail-image-placeholder.has-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 18%), transparent 58%);
+  pointer-events: none;
+}
+
 .match-badge,
 .saved-date-badge {
   position: absolute;
+  z-index: 1;
   top: 14px;
   border-radius: 999px;
   padding: 8px 12px;
@@ -1603,6 +1622,32 @@ h3 {
 .recipe-card h3,
 .recipe-card h4 {
   margin-bottom: 8px;
+}
+
+.recipe-card-image {
+  position: relative;
+  min-height: 160px;
+  overflow: hidden;
+  margin: -18px -18px 16px;
+  border-radius: 8px 8px 0 0;
+  background:
+    radial-gradient(circle at 54% 38%, rgb(255 255 255 / 80%) 0 14%, transparent 15%),
+    radial-gradient(circle at 76% 50%, rgb(166 91 40 / 55%) 0 18%, transparent 19%),
+    radial-gradient(circle at 18% 70%, rgb(255 248 220 / 85%) 0 19%, transparent 20%),
+    linear-gradient(135deg, #b7d5a0 0%, #f5f1d5 44%, #8fbe75 100%);
+}
+
+.recipe-card-image > span {
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  left: 12px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: #4caf50;
+  background: rgb(255 255 255 / 88%);
+  font-size: 0.76rem;
+  font-weight: 700;
 }
 
 .recipe-card h4,

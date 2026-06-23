@@ -41,7 +41,7 @@ function RegisterPage({ onRegister, onShowLogin }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.12, duration: 0.38 }}
         >
-          <div className="login-logo-placeholder" aria-label="SMARTKITCHEN logo placeholder">
+          <div className="login-logo-placeholder" aria-label="ChefSpark logo placeholder">
             <ChefHat size={38} strokeWidth={2.4} aria-hidden="true" />
             <span className="logo-spark" aria-hidden="true">
               <Sparkles size={13} strokeWidth={2.4} />

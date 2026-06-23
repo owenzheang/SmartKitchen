@@ -101,7 +101,13 @@ function RecipeDetailPage({ savedRecipeId, onBack }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.32 }}
         >
-          <section className="recipe-detail-image-placeholder" aria-label="Recipe image placeholder">
+          <section
+            className={recipe.imageUrl ? "recipe-detail-image-placeholder has-image" : "recipe-detail-image-placeholder"}
+            aria-label="Recipe image"
+          >
+            {recipe.imageUrl && (
+              <img src={recipe.imageUrl} alt={recipe.title} />
+            )}
             <span>{recipe.cuisine}</span>
           </section>
 

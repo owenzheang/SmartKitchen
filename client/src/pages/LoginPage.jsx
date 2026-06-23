@@ -1,7 +1,9 @@
 ﻿import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ChefHat, Eye, EyeOff, Lock, Mail, Sparkles } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import chefsparkLogo from "../assets/chefspark.png";
 import { loginUser, saveToken } from "../services/api.js";
+
 
 const authPanelMotion = {
   initial: { opacity: 0, y: 28 },
@@ -41,8 +43,8 @@ function LoginPage({ onLogin, onShowRegister }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.12, duration: 0.38 }}
         >
-          <div className="login-logo-placeholder" aria-label="SMARTKITCHEN logo placeholder">
-            <ChefHat size={38} strokeWidth={2.4} aria-hidden="true" />
+          <div className="login-logo-placeholder" aria-label="ChefSpark logo">
+            <img src={chefsparkLogo} alt="" aria-hidden="true" />
           </div>
 
           <h1>

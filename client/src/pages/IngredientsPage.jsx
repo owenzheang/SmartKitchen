@@ -17,6 +17,8 @@ import {
   getSavedRecipes
 } from "../services/api.js";
 
+const hi = {emoji: "👋", label: "waving hand"};
+
 const emptyForm = {
   name: ""
 };
@@ -156,7 +158,7 @@ function IngredientsPage({ onGenerateRecipes }) {
 
         <div className="ingredients-greeting">
           <span>CHEFSPARK</span>
-          <h1>{greeting}, Chef!</h1>
+          <h1>{greeting}, Chef! {hi.emoji}</h1>
         </div>
 
         <motion.button

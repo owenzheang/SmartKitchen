@@ -178,7 +178,10 @@ function SavedRecipesPage({ onBack, onViewRecipe }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: -36, transition: { duration: 0.22 } }}
             >
-              <div className="saved-image-placeholder">
+              <div className={recipe.imageUrl ? "saved-image-placeholder has-image" : "saved-image-placeholder"}>
+                {recipe.imageUrl && (
+                  <img src={recipe.imageUrl} alt={recipe.title} />
+                )}
                 <span className={`match-badge ${getMatchClass(matchScore)}`}>
                   {matchScore}% match
                 </span>

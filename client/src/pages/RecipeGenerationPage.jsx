@@ -273,6 +273,13 @@ function RecipeGenerationPage({ onBack }) {
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ delay: index * 0.06, duration: 0.3 }}
                 >
+                <div className={recipe.imageUrl ? "recipe-card-image has-image" : "recipe-card-image"}>
+                  {recipe.imageUrl && (
+                    <img src={recipe.imageUrl} alt={recipe.title} />
+                  )}
+                  <span>{recipe.cuisine}</span>
+                </div>
+
                 <div className="recipe-card-header">
                   <h3>{recipe.title}</h3>
                   <span>{recipe.matchScore}% match</span>
