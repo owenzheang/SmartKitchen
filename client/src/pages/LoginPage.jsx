@@ -51,6 +51,7 @@ function LoginPage({ onLogin, onShowRegister }) {
             <span>CHEF</span>
             <span>SPARK</span>
           </h1>
+          <p>Enter email and password to sign in</p>
           
         </motion.div>
 
