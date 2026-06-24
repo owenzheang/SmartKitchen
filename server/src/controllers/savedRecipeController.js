@@ -4,6 +4,10 @@ function isStringArray(value) {
   return Array.isArray(value) && value.every((item) => typeof item === "string");
 }
 
+function isOptionalString(value) {
+  return value === undefined || typeof value === "string";
+}
+
 function isValidRecipe(recipe) {
   return (
     recipe &&
@@ -16,7 +20,9 @@ function isValidRecipe(recipe) {
     recipe.matchScore <= 100 &&
     isStringArray(recipe.missingIngredients) &&
     isStringArray(recipe.ingredients) &&
-    isStringArray(recipe.steps)
+    isStringArray(recipe.steps) &&
+    isOptionalString(recipe.imagePrompt) &&
+    isOptionalString(recipe.imageUrl)
   );
 }
 

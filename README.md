@@ -1,6 +1,6 @@
-# SMARTKITCHEN
+# ChefSpark
 
-SMARTKITCHEN is a mobile-first, AI-powered cooking assistant that helps users decide what to cook with ingredients they already have. Users can manage their kitchen inventory, choose a cuisine and difficulty, generate recipes with DeepSeek, and save recipes for later.
+ChefSpark is a mobile-first, AI-powered cooking assistant that helps users decide what to cook with ingredients they already have. Users can manage their kitchen inventory, choose a cuisine and difficulty, generate recipes with DeepSeek, and save recipes for later.
 
 ## Target Users
 
@@ -58,23 +58,23 @@ Replace these placeholder paths after adding screenshots to `docs/screenshots/`.
 
 ### Authentication
 
-![SMARTKITCHEN login page](screenshots/loginpage.png)
+![ChefSpark login page](screenshots/loginpage.png)
 
 ### Ingredient Management
 
-![SMARTKITCHEN ingredients page](screenshots/ingrepage.png)
+![ChefSpark ingredients page](screenshots/ingrepage.png)
 
 ### Recipe Generation
 
-![SMARTKITCHEN recipe generation page](screenshots/genpage.png)
+![ChefSpark recipe generation page](screenshots/genpage.png)
 
 ### Saved Recipes
 
-![SMARTKITCHEN saved recipes page](screenshots/savepage.png)
+![ChefSpark saved recipes page](screenshots/savepage.png)
 
 ### Recipe Detail
 
-![SMARTKITCHEN recipe detail page](screenshots/detailpage.png)
+![ChefSpark recipe detail page](screenshots/detailpage.png)
 
 ## Local Setup
 
@@ -88,7 +88,7 @@ Replace these placeholder paths after adding screenshots to `docs/screenshots/`.
 
 ```bash
 git clone <repository-url>
-cd SmartKitchen
+cd ChefSpark
 ```
 
 ### 2. Install backend dependencies
@@ -105,6 +105,7 @@ Create `server/.env`:
 ```env
 DEEPSEEK_API_KEY=your_deepseek_api_key
 JWT_SECRET=your_secure_jwt_secret
+PEXELS_API_KEY=your_pexels_api_key
 ```
 
 ### 4. Start the backend
@@ -138,8 +139,51 @@ Open `http://localhost:5173` in a browser.
 | --- | --- | --- |
 | `DEEPSEEK_API_KEY` | Yes | Authenticates backend requests to the DeepSeek API. |
 | `JWT_SECRET` | Yes | Signs and verifies user authentication tokens. |
+| `PEXELS_API_KEY` | Yes | Authenticates backend recipe image searches with the Pexels API. |
 
 Never commit real API keys or production secrets to source control.
+
+## PWA Setup
+
+ChefSpark is configured as an installable PWA with `vite-plugin-pwa`.
+
+Place the PWA icon PNG files here:
+
+```text
+client/public/icons/icon-192.png
+client/public/icons/icon-512.png
+client/public/icons/apple-touch-icon.png
+client/public/icons/maskable-icon-512.png
+```
+
+Recommended icon sizes:
+
+- `icon-192.png`: 192x192
+- `icon-512.png`: 512x512
+- `apple-touch-icon.png`: 180x180
+- `maskable-icon-512.png`: 512x512 with safe padding for Android adaptive icons
+
+Build and preview the PWA:
+
+```bash
+cd client
+npm run build
+npm run preview
+```
+
+Android install test:
+
+1. Open the preview URL in Chrome.
+2. Open Chrome menu.
+3. Choose `Add to Home screen` or `Install app`.
+
+iPhone install test:
+
+1. Open the app in Safari.
+2. Tap Share.
+3. Choose `Add to Home Screen`.
+
+The PWA caches static app assets only. Authenticated API requests, recipe generation, ingredient updates, saved recipe data, DeepSeek calls, and Pexels image searches still require a network connection.
 
 ## Current Limitations
 

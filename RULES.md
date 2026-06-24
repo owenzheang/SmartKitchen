@@ -34,6 +34,7 @@ DeepSeek
 
 Environment Variable:
 DEEPSEEK_API_KEY: sk-3709a541eb224dccb560fe114bf0ecb1
+PEXELS_API_KEY: xp7QjZtNjEZK2dZ65jIh9U14MX6OK4DxyJiEsy8zTJDmHh8IZtSISNz2
 
 Model:
 deepseek-chat

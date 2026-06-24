@@ -1,5 +1,6 @@
 ﻿import database from "../database.js";
 import { generateRecipesWithDeepSeek } from "../services/deepseekService.js";
+import { fetchRecipeImageUrl } from "../services/pexelsService.js";
 
 const allowedCuisines = ["Chinese", "Western"];
 const allowedDifficulties = ["Easy", "Medium", "Hard"];
@@ -43,8 +44,17 @@ export async function generateRecipes(req, res) {
     }
 
     const recipes = await generateRecipesWithDeepSeek({ ingredients, cuisine, difficulty });
+    const recipesWithImages = await Promise.all(
+      recipes.recipes.map(async (recipe) => ({
+        ...recipe,
+        imageUrl: await fetchRecipeImageUrl({
+          imagePrompt: recipe.imagePrompt,
+          title: recipe.title
+        })
+      }))
+    );
 
-    res.json(recipes);
+    res.json({ recipes: recipesWithImages });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

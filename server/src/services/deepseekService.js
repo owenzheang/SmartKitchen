@@ -22,7 +22,8 @@ The JSON must match this structure exactly:
       "matchScore": 0,
       "missingIngredients": ["string"],
       "ingredients": ["string"],
-      "steps": ["string"]
+      "steps": ["string"],
+      "imagePrompt": "string"
     }
   ]
 }
@@ -36,7 +37,9 @@ Rules:
 - The difficulty for each recipe should be ${difficulty} unless a recipe truly cannot match it.
 - Recipes must be suitable for beginner cooks.
 - missingIngredients should list only ingredients the user does not already have.
-- steps should be clear and simple.`,
+- steps should be clear and simple.
+- imagePrompt should be a short food photo search phrase for Pexels.
+- imagePrompt should include the recipe title, cuisine, and words like plated food.`,
     user: `Available ingredients:
 ${ingredientList}
 
@@ -68,6 +71,8 @@ function isValidRecipe(recipe) {
     isStringArray(recipe.missingIngredients) &&
     isStringArray(recipe.ingredients) &&
     isStringArray(recipe.steps) &&
+    typeof recipe.imagePrompt === "string" &&
+    recipe.imagePrompt.trim().length > 0 &&
     recipe.steps.length >= 4 &&
     recipe.steps.length <= 8
   );

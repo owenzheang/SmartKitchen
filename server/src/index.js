@@ -9,8 +9,36 @@ import savedRecipeRoutes from "./routes/savedRecipeRoutes.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const localDevelopmentOrigins = [
+  /^http:\/\/localhost:(5173|4173)$/,
+  /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}:(5173|4173)$/,
+  /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}:(5173|4173)$/
+];
+
+const productionOrigins = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 app.use(cors({
-  origin: "http://localhost:5173"
+  origin(origin, callback) {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    const isAllowedInDevelopment =
+      process.env.NODE_ENV !== "production" &&
+      localDevelopmentOrigins.some((pattern) => pattern.test(origin));
+    const isAllowedInProduction = productionOrigins.includes(origin);
+
+    if (isAllowedInDevelopment || isAllowedInProduction) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error("Origin is not allowed by CORS."));
+  }
 }));
 app.use(express.json());
 
