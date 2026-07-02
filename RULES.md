@@ -1,78 +1,83 @@
-# RULES
-
-# SMARTKITCHEN Development Rules
+# ChefSpark Development Rules
 
 ## General Rules
 
-1. Keep the project beginner-friendly.
-2. Prefer simple solutions over complex solutions.
-3. Prioritize readability and maintainability.
-4. Follow the existing project structure.
-5. Explain major architectural decisions.
+1. Keep the project approachable and maintainable.
+2. Prefer simple, readable solutions over unnecessary complexity.
+3. Follow the existing project structure and conventions.
+4. Implement one focused feature or fix at a time.
+5. Do not modify unrelated files.
+6. Explain major architectural decisions before implementation.
+7. Ask before making a major architecture or technology change.
 
-## Tech Stack Rules
+## Approved Stack
 
-Frontend:
+### Frontend
 
 - React
 - Vite
+- CSS
+- Motion (Framer Motion)
+- Lucide React
+- `vite-plugin-pwa`
 
-Backend:
+### Backend
 
+- Node.js
 - Express.js
+- JWT
+- bcrypt
+- CORS
+- dotenv
 
-Database:
+### Data and Services
 
 - SQLite
+- DeepSeek API using the `deepseek-chat` model and JSON responses
+- Pexels API for recipe images
 
-AI:
+### Deployment
 
-- DeepSeek API
+- Vercel for the frontend
+- Render for the backend
+- Progressive Web App for mobile installation
 
-AI Provider:
-DeepSeek
-
-Environment Variable:
-DEEPSEEK_API_KEY: 
-PEXELS_API_KEY: 
-
-Model:
-deepseek-chat
-
-Response Format:
-JSON
-
-Error Handling:
-Return HTTP 500 with error message
-
-Do NOT introduce:
-
-- Next.js
-- Prisma
-- PostgreSQL
-- Docker
-- Redis
-- GraphQL
-- Microservices
-- Kubernetes
-
-Unless explicitly requested.
+Do not introduce Next.js, Prisma, PostgreSQL, Docker, Redis, GraphQL, microservices, or Kubernetes unless explicitly approved.
 
 ## Development Rules
 
-1. Implement one feature at a time.
-2. Do not modify unrelated files.
-3. Ask before making major architecture changes.
-4. Use clear file and folder names.
-5. Create reusable components when appropriate.
-6. Keep API endpoints RESTful.
-7. Use comments only when necessary.
+1. Keep API endpoints RESTful.
+2. Reuse components when it improves clarity without over-engineering.
+3. Use clear file, component, function, and route names.
+4. Use comments only when they clarify non-obvious intent.
+5. Preserve mobile-first behavior and safe-area support.
+6. Preserve authentication and user data boundaries.
+7. Keep secrets on the backend and out of source control.
+8. Validate AI responses before returning or storing them.
+9. Maintain graceful fallbacks for external services where practical.
+10. Test changes in proportion to their risk, including a production build for frontend changes when appropriate.
 
-## Output Rules
+## Environment Variables
 
-When generating code:
+Backend:
 
-1. Explain what files were created.
-2. Explain why they were created.
-3. Explain how the feature works.
-4. Use beginner-friendly explanations.
+- `DEEPSEEK_API_KEY`
+- `PEXELS_API_KEY`
+- `JWT_SECRET`
+- `CORS_ORIGINS` for production origin configuration
+- `PORT` when supplied by the hosting environment
+
+Frontend:
+
+- `VITE_API_BASE_URL` for the deployed backend API
+
+Never place real credentials in documentation, committed `.env` files, client code, or logs.
+
+## Change Reporting
+
+When making changes:
+
+1. State which files were created or modified.
+2. Explain why each change was needed.
+3. Explain how the result works in clear language.
+4. Report the verification performed and any remaining limitations.

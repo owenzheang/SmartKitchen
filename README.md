@@ -21,6 +21,7 @@ ChefSpark is a mobile-first, AI-powered cooking assistant that helps users decid
 - Easy, Medium, and Hard difficulty selection
 - AI recipe generation with DeepSeek
 - Recipe match scores and missing ingredient lists
+- Recipe images from Pexels with a placeholder fallback
 - Save complete recipes to SQLite
 - View and delete saved recipes
 - Mobile-first interface with bottom navigation
@@ -54,27 +55,27 @@ ChefSpark is a mobile-first, AI-powered cooking assistant that helps users decid
 
 ## Screenshots
 
-Replace these placeholder paths after adding screenshots to `docs/screenshots/`.
+Add the project screenshots to `docs/screenshots/` using the filenames referenced below.
 
 ### Authentication
 
-![ChefSpark login page](screenshots/loginpage.png)
+![ChefSpark login page](docs/screenshots/loginpage.png)
 
 ### Ingredient Management
 
-![ChefSpark ingredients page](screenshots/ingrepage.png)
+![ChefSpark ingredients page](docs/screenshots/ingrepage.png)
 
 ### Recipe Generation
 
-![ChefSpark recipe generation page](screenshots/genpage.png)
+![ChefSpark recipe generation page](docs/screenshots/genpage.png)
 
 ### Saved Recipes
 
-![ChefSpark saved recipes page](screenshots/savepage.png)
+![ChefSpark saved recipes page](docs/screenshots/savepage.png)
 
 ### Recipe Detail
 
-![ChefSpark recipe detail page](screenshots/detailpage.png)
+![ChefSpark recipe detail page](docs/screenshots/detailpage.png)
 
 ## Local Setup
 
@@ -83,6 +84,7 @@ Replace these placeholder paths after adding screenshots to `docs/screenshots/`.
 - Node.js 18 or newer
 - npm
 - A DeepSeek API key
+- A Pexels API key
 
 ### 1. Clone the repository
 
@@ -114,7 +116,7 @@ PEXELS_API_KEY=your_pexels_api_key
 npm run dev
 ```
 
-The backend runs at `http://localhost:5000`.
+The backend runs at `http://localhost:5000` by default.
 
 ### 5. Install frontend dependencies
 
@@ -133,6 +135,8 @@ npm run dev
 
 Open `http://localhost:5173` in a browser.
 
+For a deployed frontend, set `VITE_API_BASE_URL` to the backend API base URL, including `/api`.
+
 ## Environment Variables
 
 | Variable | Required | Description |
@@ -140,6 +144,10 @@ Open `http://localhost:5173` in a browser.
 | `DEEPSEEK_API_KEY` | Yes | Authenticates backend requests to the DeepSeek API. |
 | `JWT_SECRET` | Yes | Signs and verifies user authentication tokens. |
 | `PEXELS_API_KEY` | Yes | Authenticates backend recipe image searches with the Pexels API. |
+| `CORS_ORIGINS` | Production | Comma-separated frontend origins allowed to call the backend. |
+| `PORT` | Hosting-dependent | Overrides the backend's default port of `5000`. |
+
+Frontend deployments use `VITE_API_BASE_URL` to select the backend API. Local development defaults to `http://localhost:5000/api`.
 
 Never commit real API keys or production secrets to source control.
 
@@ -191,7 +199,7 @@ The PWA caches static app assets only. Authenticated API requests, recipe genera
 - JWT tokens are stored in browser `localStorage`.
 - Saved recipe duplicates are allowed.
 - Recipe generation depends on DeepSeek availability and response quality.
-- Generated recipes do not include images or nutritional information.
+- Generated recipes include externally sourced images but not nutritional information.
 - The app currently supports only Chinese and Western cuisine preferences.
 - There are no automated tests yet.
 
@@ -209,7 +217,7 @@ The PWA caches static app assets only. Authenticated API requests, recipe genera
 
 ## Project Status
 
-The current MVP supports the complete flow:
+ChefSpark began as the SmartKitchen university MVP and is now being developed as a real mobile-first product. The current release supports the complete core flow:
 
 ```text
 Register/Login
