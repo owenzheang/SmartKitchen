@@ -38,12 +38,19 @@ function formatIngredientName(ingredient) {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
-function RecipeDetailPage({ savedRecipeId, onBack }) {
-  const [savedRecipe, setSavedRecipe] = useState(null);
+function RecipeDetailPage({ savedRecipeId, recipe: generatedRecipe = null, onBack }) {
+  const [savedRecipe, setSavedRecipe] = useState(
+    generatedRecipe ? { recipe: generatedRecipe } : null
+  );
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (generatedRecipe) {
+      setSavedRecipe({ recipe: generatedRecipe });
+      return;
+    }
+
     async function loadRecipe() {
       setMessage("");
       setIsLoading(true);
@@ -59,7 +66,7 @@ function RecipeDetailPage({ savedRecipeId, onBack }) {
     }
 
     loadRecipe();
-  }, [savedRecipeId]);
+  }, [savedRecipeId, generatedRecipe]);
 
   const recipe = savedRecipe?.recipe;
 

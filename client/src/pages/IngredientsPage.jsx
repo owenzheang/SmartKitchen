@@ -37,14 +37,16 @@ const chipMotion = {
 };
 
 const popularIngredients = [
-  "Eggs",
   "Tomato",
-  "Garlic",
   "Onion",
   "Rice",
   "Chicken",
   "Pasta",
   "Potato",
+  "Oil",
+  "Salt",
+  "Eggs",
+  "Garlic",
   "Spinach",
   "Carrot",
   "Mushroom",
@@ -167,7 +169,7 @@ function IngredientsPage({ onGenerateRecipes }) {
           aria-label="Notifications"
           whileTap={{ scale: 0.92 }}
         >
-          <Bell size={17} strokeWidth={1.8} aria-hidden="true" />
+          <Bell size={15} strokeWidth={1.8} aria-hidden="true" />
           <span></span>
         </motion.button>
       </motion.header>
@@ -179,12 +181,12 @@ function IngredientsPage({ onGenerateRecipes }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.08, duration: 0.34 }}
       >
-        <div className="step-item active">
+        <div className="progress-step active">
           <span>1</span>
           <strong>Ingredients</strong>
         </div>
-        <div className="step-line"></div>
-        <div className="step-item">
+        <div className="progress-step-line"></div>
+        <div className="progress-step">
           <span>2</span>
           <strong>Generate</strong>
         </div>

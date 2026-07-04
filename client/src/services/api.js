@@ -1,5 +1,7 @@
 ﻿const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+  (import.meta.env.VITE_API_BASE_URL?.trim() ||
+    (import.meta.env.DEV ? "http://localhost:5000/api" : ""))
+    .replace(/\/+$/, "");
 const TOKEN_KEY = "smartkitchen_token";
 
 export function saveToken(token) {
@@ -15,6 +17,12 @@ export function removeToken() {
 }
 
 async function request(path, options = {}) {
+  if (!API_BASE_URL) {
+    throw new Error(
+      "ChefSpark API is not configured. Set VITE_API_BASE_URL to the backend /api URL."
+    );
+  }
+
   const token = getToken();
   const headers = {
     "Content-Type": "application/json",
@@ -25,18 +33,29 @@ async function request(path, options = {}) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers
-  });
+  let response;
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Request failed.");
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers
+    });
+  } catch {
+    throw new Error(
+      "Unable to reach the ChefSpark server. Check that the backend is running and the API URL is correct."
+    );
   }
 
-  return data;
+  const contentType = response.headers.get("content-type") || "";
+  const data = contentType.includes("application/json")
+    ? await response.json()
+    : null;
+
+  if (!response.ok) {
+    throw new Error(data?.message || `Request failed with status ${response.status}.`);
+  }
+
+  return data ?? {};
 }
 
 export function loginUser(email, password) {

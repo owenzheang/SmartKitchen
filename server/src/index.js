@@ -11,13 +11,14 @@ const PORT = process.env.PORT || 5000;
 
 const localDevelopmentOrigins = [
   /^http:\/\/localhost:(5173|4173)$/,
+  /^http:\/\/127\.0\.0\.1:(5173|4173)$/,
   /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}:(5173|4173)$/,
   /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}:(5173|4173)$/
 ];
 
 const productionOrigins = (process.env.CORS_ORIGINS || "")
   .split(",")
-  .map((origin) => origin.trim())
+  .map((origin) => origin.trim().replace(/\/$/, ""))
   .filter(Boolean);
 
 app.use(cors({
@@ -30,7 +31,8 @@ app.use(cors({
     const isAllowedInDevelopment =
       process.env.NODE_ENV !== "production" &&
       localDevelopmentOrigins.some((pattern) => pattern.test(origin));
-    const isAllowedInProduction = productionOrigins.includes(origin);
+    const normalizedOrigin = origin.replace(/\/$/, "");
+    const isAllowedInProduction = productionOrigins.includes(normalizedOrigin);
 
     if (isAllowedInDevelopment || isAllowedInProduction) {
       callback(null, true);

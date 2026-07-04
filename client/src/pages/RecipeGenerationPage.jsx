@@ -2,10 +2,14 @@
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
+  BookmarkPlus,
   ChefHat,
   Check,
+  CheckCircle2,
   ChevronDown,
+  Clock,
   Leaf,
+  ShoppingCart,
   Sparkles,
   Utensils,
   X
@@ -32,9 +36,29 @@ const cuisineOptions = [
     description: "Stir-fries, dumplings & more"
   },
   {
+    name: "Japanese",
+    emoji: "🍱",
+    description: "Ramen, sushi & bento"
+  },
+  {
     name: "Western",
     emoji: "🍝",
     description: "Pasta, burgers & roasts"
+  },
+  {
+    name: "Korean",
+    emoji: "🍲",
+    description: "Bibimbap, BBQ & stews"
+  },
+  {
+    name: "Indian",
+    emoji: "🍛",
+    description: "Curries, rice & breads"
+  },
+  {
+    name: "Thai",
+    emoji: "🌾",
+    description: "Pad thai, soups & salads"
   }
 ];
 
@@ -56,11 +80,15 @@ function DifficultyDots({ difficulty }) {
   );
 }
 
-function RecipeGenerationPage({ onBack }) {
+function RecipeGenerationPage({
+  onBack,
+  generatedRecipes,
+  setGeneratedRecipes,
+  onViewRecipe
+}) {
   const [ingredients, setIngredients] = useState([]);
   const [cuisine, setCuisine] = useState("Chinese");
   const [difficulty, setDifficulty] = useState("Easy");
-  const [recipes, setRecipes] = useState([]);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [savingTitle, setSavingTitle] = useState("");
@@ -80,12 +108,12 @@ function RecipeGenerationPage({ onBack }) {
 
   async function handleGenerate() {
     setMessage("");
-    setRecipes([]);
+    setGeneratedRecipes([]);
     setIsLoading(true);
 
     try {
       const data = await generateRecipes({ cuisine, difficulty });
-      setRecipes(data.recipes);
+      setGeneratedRecipes(data.recipes);
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -142,12 +170,12 @@ function RecipeGenerationPage({ onBack }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.08, duration: 0.34 }}
       >
-        <div className="generate-step complete">
+        <div className="progress-step complete">
           <span><Check size={16} strokeWidth={2.4} aria-hidden="true" /></span>
           <strong>Ingredients</strong>
         </div>
-        <div className="generate-step-line"></div>
-        <div className="generate-step active">
+        <div className="progress-step-line"></div>
+        <div className="progress-step active">
           <span>2</span>
           <strong>Generate</strong>
         </div>
@@ -255,7 +283,7 @@ function RecipeGenerationPage({ onBack }) {
       {message && <p className="message">{message}</p>}
 
       <AnimatePresence>
-        {recipes.length > 0 && (
+        {generatedRecipes.length > 0 && (
           <motion.section
             className="recipe-results generate-results"
             initial={{ opacity: 0, y: 16 }}
@@ -264,7 +292,7 @@ function RecipeGenerationPage({ onBack }) {
           >
             <h2>Recommended Recipes</h2>
             <div className="recipe-grid">
-              {recipes.map((recipe, index) => (
+              {generatedRecipes.map((recipe, index) => (
                 <motion.article
                   key={recipe.title}
                   className="panel recipe-card"
@@ -277,12 +305,22 @@ function RecipeGenerationPage({ onBack }) {
                   {recipe.imageUrl && (
                     <img src={recipe.imageUrl} alt={recipe.title} />
                   )}
-                  <span>{recipe.cuisine}</span>
+                  <span className="recipe-match-badge">{recipe.matchScore}% match</span>
+                  <motion.button
+                    type="button"
+                    className="recipe-save-icon"
+                    aria-label={`Save ${recipe.title}`}
+                    title={savingTitle === recipe.title ? "Saving recipe" : "Save recipe"}
+                    onClick={() => handleSave(recipe)}
+                    disabled={savingTitle === recipe.title}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <BookmarkPlus size={18} strokeWidth={2} aria-hidden="true" />
+                  </motion.button>
                 </div>
 
                 <div className="recipe-card-header">
                   <h3>{recipe.title}</h3>
-                  <span>{recipe.matchScore}% match</span>
                 </div>
                 <p className="recipe-card-meta">
                   <span>{recipe.cuisine}</span>
@@ -292,34 +330,41 @@ function RecipeGenerationPage({ onBack }) {
                     {recipe.difficulty}
                   </span>
                   <span className="meta-separator">|</span>
-                  <span>{recipe.cookTime}</span>
+                  <span className="recipe-cook-time">
+                    <Clock size={14} strokeWidth={2} aria-hidden="true" />
+                    {recipe.cookTime}
+                  </span>
                 </p>
 
-                <h4>Missing Ingredients</h4>
-                <p>{recipe.missingIngredients.length > 0 ? recipe.missingIngredients.join(", ") : "None"}</p>
+                {recipe.missingIngredients.length === 0 ? (
+                  <div className="ingredient-status available">
+                    <CheckCircle2 size={18} strokeWidth={2.2} aria-hidden="true" />
+                    <strong>You have all the ingredients!</strong>
+                  </div>
+                ) : (
+                  <div className="ingredient-status missing">
+                    <div className="ingredient-status-heading">
+                      <ShoppingCart size={17} strokeWidth={2.1} aria-hidden="true" />
+                      <strong>Missing ingredients</strong>
+                    </div>
+                    <div className="missing-ingredient-chips">
+                      {recipe.missingIngredients.map((ingredient) => (
+                        <span key={ingredient}>{ingredient}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-                <h4>Ingredients</h4>
-                <ul>
-                  {recipe.ingredients.map((ingredient) => (
-                    <li key={ingredient}>{ingredient}</li>
-                  ))}
-                </ul>
-
-                <h4>Steps</h4>
-                <ol>
-                  {recipe.steps.map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ol>
-
-                <motion.button
-                  type="button"
-                  onClick={() => handleSave(recipe)}
-                  disabled={savingTitle === recipe.title}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  {savingTitle === recipe.title ? "Saving..." : "Save Recipe"}
-                </motion.button>
+                <div className="recipe-card-actions">
+                  <motion.button
+                    type="button"
+                    className="view-recipe-button"
+                    onClick={() => onViewRecipe(recipe)}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    View Recipe
+                  </motion.button>
+                </div>
                 </motion.article>
               ))}
             </div>

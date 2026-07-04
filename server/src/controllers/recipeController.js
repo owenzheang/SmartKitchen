@@ -2,7 +2,7 @@
 import { generateRecipesWithDeepSeek } from "../services/deepseekService.js";
 import { fetchRecipeImageUrl } from "../services/pexelsService.js";
 
-const allowedCuisines = ["Chinese", "Western"];
+const allowedCuisines = ["Chinese", "Japanese", "Western", "Korean", "Indian", "Thai"];
 const allowedDifficulties = ["Easy", "Medium", "Hard"];
 
 function getUserIngredients(userId) {
@@ -30,7 +30,9 @@ export async function generateRecipes(req, res) {
     const { cuisine, difficulty } = req.body;
 
     if (!allowedCuisines.includes(cuisine)) {
-      return res.status(400).json({ message: "Cuisine must be Chinese or Western." });
+      return res.status(400).json({
+        message: `Cuisine must be one of: ${allowedCuisines.join(", ")}.`
+      });
     }
 
     if (!allowedDifficulties.includes(difficulty)) {

@@ -29,15 +29,26 @@ const navIndicatorTransition = {
 function App() {
   const [page, setPage] = useState(getToken() ? "ingredients" : "login");
   const [selectedSavedRecipeId, setSelectedSavedRecipeId] = useState(null);
+  const [selectedGeneratedRecipe, setSelectedGeneratedRecipe] = useState(null);
+  const [generatedRecipes, setGeneratedRecipes] = useState([]);
 
   function handleLogout() {
     removeToken();
     setSelectedSavedRecipeId(null);
+    setSelectedGeneratedRecipe(null);
+    setGeneratedRecipes([]);
     setPage("login");
   }
 
   function viewSavedRecipe(id) {
     setSelectedSavedRecipeId(id);
+    setSelectedGeneratedRecipe(null);
+    setPage("recipeDetail");
+  }
+
+  function viewGeneratedRecipe(recipe) {
+    setSelectedSavedRecipeId(null);
+    setSelectedGeneratedRecipe(recipe);
     setPage("recipeDetail");
   }
 
@@ -196,6 +207,9 @@ function App() {
     return renderWithNavigation(
       <RecipeGenerationPage
         onBack={() => setPage("ingredients")}
+        generatedRecipes={generatedRecipes}
+        setGeneratedRecipes={setGeneratedRecipes}
+        onViewRecipe={viewGeneratedRecipe}
         onLogout={handleLogout}
         onSavedRecipes={() => setPage("savedRecipes")}
       />
@@ -216,7 +230,8 @@ function App() {
     return renderWithNavigation(
       <RecipeDetailPage
         savedRecipeId={selectedSavedRecipeId}
-        onBack={() => setPage("savedRecipes")}
+        recipe={selectedGeneratedRecipe}
+        onBack={() => setPage(selectedGeneratedRecipe ? "recipes" : "savedRecipes")}
         onLogout={handleLogout}
       />
     );

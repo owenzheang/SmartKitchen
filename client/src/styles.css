@@ -554,63 +554,29 @@ h3 {
 }
 
 .notification-button svg {
-  width: 17px;
-  height: 17px;
+  width: 15px;
+  height: 15px;
   stroke-width: 1.8;
 }
 
 .notification-button span {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 8px;
-  height: 8px;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
   border: 1.5px solid #ffffff;
   border-radius: 50%;
   background: #4caf50;
 }
 
-.ingredient-steps {
+.ingredient-steps,
+.generate-steps {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 20px;
-}
-
-.step-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #c4cbc6;
-  font-size: 0.75rem;
-  font-weight: 530;
-  letter-spacing: 0.02em;
-}
-
-.step-item span {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #e6ebe7;
-}
-
-.step-item.active {
-  color: #3da846;
-  font-weight: 530;
-  letter-spacing: 0.02em;
-}
-
-.step-item.active span {
-  color: #ffffff;
-  background: #4caf50;
-}
-
-.step-line {
-  height: 1px;
-  background: #cfd8d0;
 }
 
 .ingredients-hero {
@@ -979,14 +945,10 @@ h3 {
 }
 
 .generate-steps {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 14px;
   margin-bottom: 26px;
 }
 
-.generate-step {
+.progress-step {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -995,7 +957,7 @@ h3 {
   font-weight: 800;
 }
 
-.generate-step span {
+.progress-step span {
   display: grid;
   place-items: center;
   width: 30px;
@@ -1004,25 +966,25 @@ h3 {
   background: #e6ebe7;
 }
 
-.generate-step.complete {
+.progress-step.complete {
   color: #a4dca8;
   font-weight: 530;
   letter-spacing: 0.02em;
 }
 
-.generate-step.complete span,
-.generate-step.active span {
+.progress-step.complete span,
+.progress-step.active span {
   color: #ffffff;
   background: #4caf50;
 }
 
-.generate-step.active {
+.progress-step.active {
   color: #3da846;
   font-weight: 530;
   letter-spacing: 0.02em;
 }
 
-.generate-step-line {
+.progress-step-line {
   height: 1px;
   background: #a9d9ad;
 }
@@ -1624,12 +1586,17 @@ h3 {
   margin-bottom: 8px;
 }
 
+.recipe-card {
+  overflow: hidden;
+  border-radius: 22px;
+}
+
 .recipe-card-image {
   position: relative;
   min-height: 160px;
   overflow: hidden;
   margin: -18px -18px 16px;
-  border-radius: 8px 8px 0 0;
+  border-radius: 22px 22px 0 0;
   background:
     radial-gradient(circle at 54% 38%, rgb(255 255 255 / 80%) 0 14%, transparent 15%),
     radial-gradient(circle at 76% 50%, rgb(166 91 40 / 55%) 0 18%, transparent 19%),
@@ -1637,9 +1604,9 @@ h3 {
     linear-gradient(135deg, #b7d5a0 0%, #f5f1d5 44%, #8fbe75 100%);
 }
 
-.recipe-card-image > span {
+.recipe-match-badge {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   top: 12px;
   left: 12px;
   border-radius: 999px;
@@ -1648,6 +1615,31 @@ h3 {
   background: rgb(255 255 255 / 88%);
   font-size: 0.76rem;
   font-weight: 700;
+}
+
+.recipe-save-icon {
+  position: absolute;
+  z-index: 2;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  min-width: 38px;
+  width: 38px;
+  min-height: 38px;
+  height: 38px;
+  border: 1px solid rgb(255 255 255 / 74%);
+  border-radius: 50%;
+  padding: 0;
+  color: #2f7d32;
+  background: rgb(255 255 255 / 90%);
+  box-shadow: 0 6px 16px rgb(20 45 24 / 18%);
+  backdrop-filter: blur(8px);
+}
+
+.recipe-save-icon:hover {
+  color: #2f7d32;
+  background: #ffffff;
 }
 
 .recipe-card h4,
@@ -1672,15 +1664,16 @@ h3 {
   gap: 12px;
 }
 
-.recipe-card-header span {
-  flex: 0 0 auto;
-  border-radius: 999px;
-  padding: 5px 9px;
-  color: #2f7d32;
-  background: #e8f5e9;
-  font-size: 0.78rem;
+.recipe-card-actions {
+  display: block;
+  margin-top: 18px;
+}
+
+.recipe-card-actions .view-recipe-button {
+  width: 100%;
+  margin: 0;
+  border-radius: 16px;
   font-weight: 700;
-  white-space: nowrap;
 }
 
 .recipe-card-meta,
@@ -1703,6 +1696,64 @@ h3 {
 
 .difficulty-indicator {
   gap: 6px;
+}
+
+.recipe-cook-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.recipe-cook-time svg {
+  color: #89928c;
+}
+
+.ingredient-status {
+  margin-top: 16px;
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.ingredient-status.available {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border-color: #b9dfbd;
+  color: #26752c;
+  background: #eff9f0;
+}
+
+.ingredient-status.missing {
+  border-color: #f2c99e;
+  color: #a94f19;
+  background: #fff7ed;
+}
+
+.ingredient-status strong {
+  font-size: 0.84rem;
+}
+
+.ingredient-status-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.missing-ingredient-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.missing-ingredient-chips span {
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: #a84612;
+  background: #ffe8d2;
+  font-size: 0.72rem;
+  font-weight: 650;
 }
 
 .difficulty-dots {
