@@ -31,12 +31,14 @@ function App() {
   const [selectedSavedRecipeId, setSelectedSavedRecipeId] = useState(null);
   const [selectedGeneratedRecipe, setSelectedGeneratedRecipe] = useState(null);
   const [generatedRecipes, setGeneratedRecipes] = useState([]);
+  const [savedGeneratedRecipeKeys, setSavedGeneratedRecipeKeys] = useState(new Set());
 
   function handleLogout() {
     removeToken();
     setSelectedSavedRecipeId(null);
     setSelectedGeneratedRecipe(null);
     setGeneratedRecipes([]);
+    setSavedGeneratedRecipeKeys(new Set());
     setPage("login");
   }
 
@@ -209,6 +211,8 @@ function App() {
         onBack={() => setPage("ingredients")}
         generatedRecipes={generatedRecipes}
         setGeneratedRecipes={setGeneratedRecipes}
+        savedRecipeKeys={savedGeneratedRecipeKeys}
+        setSavedRecipeKeys={setSavedGeneratedRecipeKeys}
         onViewRecipe={viewGeneratedRecipe}
         onLogout={handleLogout}
         onSavedRecipes={() => setPage("savedRecipes")}

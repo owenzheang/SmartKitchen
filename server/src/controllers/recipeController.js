@@ -1,5 +1,8 @@
 ﻿import database from "../database.js";
-import { generateRecipesWithDeepSeek } from "../services/deepseekService.js";
+import {
+  dangerousIngredientNames,
+  generateRecipesWithDeepSeek
+} from "../services/deepseekService.js";
 import { fetchRecipeImageUrl } from "../services/pexelsService.js";
 
 const allowedCuisines = ["Chinese", "Japanese", "Western", "Korean", "Indian", "Thai"];
@@ -39,10 +42,26 @@ export async function generateRecipes(req, res) {
       return res.status(400).json({ message: "Difficulty must be Easy, Medium, or Hard." });
     }
 
-    const ingredients = await getUserIngredients(req.user.userId);
+    const storedIngredients = await getUserIngredients(req.user.userId);
+    const ingredients = (Array.isArray(storedIngredients) ? storedIngredients : [])
+      .map((ingredient) => ({
+        ...ingredient,
+        name: typeof ingredient?.name === "string" ? ingredient.name.trim() : ""
+      }))
+      .filter((ingredient) => ingredient.name.length > 0);
 
     if (ingredients.length === 0) {
-      return res.status(400).json({ message: "Please add ingredients before generating recipes." });
+      return res.status(400).json({ message: "Please add at least one ingredient." });
+    }
+
+    const hasDangerousIngredient = ingredients.some((ingredient) =>
+      dangerousIngredientNames.has(ingredient.name.toLowerCase())
+    );
+
+    if (hasDangerousIngredient) {
+      return res.status(400).json({
+        message: "Some items may be unsafe to eat. Please remove them before generating recipes."
+      });
     }
 
     const recipes = await generateRecipesWithDeepSeek({ ingredients, cuisine, difficulty });
@@ -58,6 +77,6 @@ export async function generateRecipes(req, res) {
 
     res.json({ recipes: recipesWithImages });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 }

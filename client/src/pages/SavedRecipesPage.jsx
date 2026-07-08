@@ -1,6 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, Bookmark, Clock, Trash2 } from "lucide-react";
+import { ArrowLeft, Clock, Trash2 } from "lucide-react";
 import { deleteSavedRecipe, getSavedRecipes } from "../services/api.js";
 
 const pageMotion = {
@@ -132,9 +132,6 @@ function SavedRecipesPage({ onBack, onViewRecipe }) {
           <h1>Saved Recipes</h1>
         </div>
 
-        <div className="saved-bookmark" aria-hidden="true">
-          <Bookmark size={22} strokeWidth={1.8} fill="currentColor" />
-        </div>
       </motion.header>
 
       <motion.p

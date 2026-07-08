@@ -1,5 +1,22 @@
 ﻿const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
 const DEEPSEEK_MODEL = "deepseek-chat";
+const INSUFFICIENT_INGREDIENTS_ERROR = "INSUFFICIENT_USABLE_INGREDIENTS";
+const INSUFFICIENT_INGREDIENTS_MESSAGE =
+  "Please add at least one main ingredient, such as eggs, rice, chicken, tofu, potato, tomato, or noodles.";
+
+export const dangerousIngredientNames = new Set([
+  "bleach",
+  "detergent",
+  "poison",
+  "rat poison",
+  "medicine",
+  "battery",
+  "paint",
+  "cleaning spray",
+  "pesticide",
+  "gasoline",
+  "alcohol fuel"
+]);
 
 function buildRecipePrompt(ingredients, cuisine, difficulty) {
   const ingredientList = ingredients
@@ -28,11 +45,26 @@ The JSON must match this structure exactly:
   ]
 }
 
+If there are not enough usable food ingredients, return only:
+{
+  "error": "${INSUFFICIENT_INGREDIENTS_ERROR}"
+}
+
 Rules:
 - Return exactly 3 recipes.
 - Return JSON only.
+- First analyze the available items and identify which are real, edible cooking ingredients.
+- Silently ignore non-edible, unrealistic, fictional, joke, vague, or irrelevant items.
+- Never mention ignored items or include them in titles, ingredients, missingIngredients, imagePrompt, or steps.
+- Never generate recipes using unsafe, toxic, non-food, fictional, or joke ingredients.
+- If the usable items are only condiments, seasonings, sauces, liquids, or supporting ingredients, return the error JSON.
+- If there is not enough usable food to make a real home-cooked dish, return the error JSON.
+- Do not invent a dish just to satisfy the request.
 - Return 4-8 cooking steps per recipe.
 - Prefer using the user's available ingredients.
+- The 3 recipes must be meaningfully different dishes, not small variations of the same dish.
+- Do not force every available ingredient into every recipe; each recipe may use a useful subset.
+- Prefer different cooking methods or formats when suitable, such as stir-fry, soup, rice bowl, steamed dish, pan-fried dish, stew, salad, or noodle-style dish.
 - Each matchScore must be an integer between 0 and 100.
 - The difficulty for each recipe should be ${difficulty} unless a recipe truly cannot match it.
 - Recipes must be suitable for beginner cooks.
@@ -49,7 +81,7 @@ ${cuisine}
 Preferred difficulty:
 ${difficulty}
 
-Generate 3 beginner-friendly recipes using these ingredients.
+Generate 3 realistic, meaningfully different beginner-friendly recipes using the usable edible ingredients.
 Return JSON only.`
   };
 }
@@ -62,20 +94,49 @@ function isValidRecipe(recipe) {
   return (
     recipe &&
     typeof recipe.title === "string" &&
+    recipe.title.trim().length > 0 &&
     typeof recipe.cuisine === "string" &&
+    recipe.cuisine.trim().length > 0 &&
     typeof recipe.difficulty === "string" &&
+    recipe.difficulty.trim().length > 0 &&
     typeof recipe.cookTime === "string" &&
+    recipe.cookTime.trim().length > 0 &&
     Number.isInteger(recipe.matchScore) &&
     recipe.matchScore >= 0 &&
     recipe.matchScore <= 100 &&
     isStringArray(recipe.missingIngredients) &&
     isStringArray(recipe.ingredients) &&
+    recipe.ingredients.length > 0 &&
     isStringArray(recipe.steps) &&
     typeof recipe.imagePrompt === "string" &&
     recipe.imagePrompt.trim().length > 0 &&
     recipe.steps.length >= 4 &&
-    recipe.steps.length <= 8
+    recipe.steps.length <= 8 &&
+    recipe.steps.every((step) => step.trim().length > 0)
   );
+}
+
+function containsDangerousText(value) {
+  if (typeof value === "string") {
+    const normalizedValue = value.toLowerCase();
+    return [...dangerousIngredientNames].some((item) => normalizedValue.includes(item));
+  }
+
+  if (Array.isArray(value)) {
+    return value.some(containsDangerousText);
+  }
+
+  return false;
+}
+
+function recipeContainsDangerousContent(recipe) {
+  return [
+    recipe.title,
+    recipe.ingredients,
+    recipe.missingIngredients,
+    recipe.imagePrompt,
+    recipe.steps
+  ].some(containsDangerousText);
 }
 
 function validateRecipeResponse(data) {
@@ -87,7 +148,15 @@ function validateRecipeResponse(data) {
     return false;
   }
 
-  return data.recipes.every(isValidRecipe);
+  return data.recipes.every(
+    (recipe) => isValidRecipe(recipe) && !recipeContainsDangerousContent(recipe)
+  );
+}
+
+function createGenerationError(message, statusCode) {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
 }
 
 export async function generateRecipesWithDeepSeek({ ingredients, cuisine, difficulty }) {
@@ -133,11 +202,18 @@ export async function generateRecipesWithDeepSeek({ ingredients, cuisine, diffic
   try {
     parsedContent = JSON.parse(content);
   } catch (error) {
-    throw new Error("AI returned invalid JSON. Please try again.");
+    throw createGenerationError("AI returned invalid JSON. Please try again.", 502);
+  }
+
+  if (parsedContent?.error === INSUFFICIENT_INGREDIENTS_ERROR) {
+    throw createGenerationError(INSUFFICIENT_INGREDIENTS_MESSAGE, 400);
   }
 
   if (!validateRecipeResponse(parsedContent)) {
-    throw new Error("AI response format was invalid. Please try again.");
+    throw createGenerationError(
+      "AI could not generate three safe, complete recipes. Please try again.",
+      502
+    );
   }
 
   return parsedContent;

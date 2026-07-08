@@ -6,6 +6,10 @@
   text-rendering: optimizeLegibility;
 }
 
+html {
+  touch-action: manipulation;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -15,6 +19,7 @@ body {
   min-height: 100vh;
   margin: 0;
   background: #eef3ef;
+  -webkit-text-size-adjust: 100%;
 }
 
 button,
@@ -53,6 +58,7 @@ select {
   color: #203126;
   background: #ffffff;
   outline: none;
+  font-size: 1rem;
 }
 
 input:focus,
@@ -737,7 +743,7 @@ h3 {
   border: 0;
   padding: 0;
   color: #1a1a1a;
-  font-size: 0.88rem;
+  font-size: 1rem;
   background: transparent;
   box-shadow: none;
 }
@@ -873,14 +879,13 @@ h3 {
 
 .generate-topbar {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  grid-template-columns: 44px minmax(0, 1fr);
   align-items: center;
   gap: 14px;
   margin-bottom: 30px;
 }
 
-.generate-back-button,
-.generate-logo {
+.generate-back-button {
   display: grid;
   place-items: center;
   width: 44px;
@@ -901,7 +906,6 @@ h3 {
 }
 
 .generate-back-button svg,
-.generate-logo svg,
 .generate-leaf-icon svg {
   fill: none;
   stroke: currentColor;
@@ -930,18 +934,6 @@ h3 {
   color: #111827;
   font-size: 1.00rem;
   line-height: 1.05;
-}
-
-.generate-logo {
-  color: #ffffff;
-  background: #4caf50;
-  box-shadow: 0 12px 22px rgb(76 175 80 / 24%);
-}
-
-.generate-logo svg {
-  width: 22px;
-  height: 22px;
-  stroke-width: 1.8;
 }
 
 .generate-steps {
@@ -1250,14 +1242,13 @@ h3 {
 
 .saved-topbar {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) 48px;
+  grid-template-columns: 44px minmax(0, 1fr);
   align-items: center;
   gap: 16px;
   margin-bottom: 28px;
 }
 
-.saved-back-button,
-.saved-bookmark {
+.saved-back-button {
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -1278,7 +1269,6 @@ h3 {
 }
 
 .saved-back-button svg,
-.saved-bookmark svg,
 .saved-delete-button svg {
   fill: none;
   stroke: currentColor;
@@ -1307,22 +1297,6 @@ h3 {
   color: #111827;
   font-size: 1.00rem;
   line-height: 1.05;
-}
-
-.saved-bookmark {
-  width: 45px;
-  height: 45px;
-  color: #ffffff;
-  background: #4caf50;
-  box-shadow: 0 12px 22px rgb(76 175 80 / 24%);
-}
-
-.saved-bookmark svg {
-  width: 22px;
-  height: 22px;
-  fill: #ffffff;
-  stroke: #ffffff;
-  stroke-width: 1.6;
 }
 
 .saved-summary {
@@ -1640,6 +1614,15 @@ h3 {
 .recipe-save-icon:hover {
   color: #2f7d32;
   background: #ffffff;
+}
+
+.recipe-save-icon.saved {
+  color: #ffffff;
+  background: #4caf50;
+}
+
+.recipe-save-icon.saved:disabled {
+  opacity: 1;
 }
 
 .recipe-card h4,

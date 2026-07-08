@@ -2,8 +2,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
-  BookmarkPlus,
-  ChefHat,
+  Bookmark,
   Check,
   CheckCircle2,
   ChevronDown,
@@ -46,16 +45,6 @@ const cuisineOptions = [
     description: "Pasta, burgers & roasts"
   },
   {
-    name: "Korean",
-    emoji: "🍲",
-    description: "Bibimbap, BBQ & stews"
-  },
-  {
-    name: "Indian",
-    emoji: "🍛",
-    description: "Curries, rice & breads"
-  },
-  {
     name: "Thai",
     emoji: "🌾",
     description: "Pad thai, soups & salads"
@@ -84,6 +73,8 @@ function RecipeGenerationPage({
   onBack,
   generatedRecipes,
   setGeneratedRecipes,
+  savedRecipeKeys,
+  setSavedRecipeKeys,
   onViewRecipe
 }) {
   const [ingredients, setIngredients] = useState([]);
@@ -122,11 +113,13 @@ function RecipeGenerationPage({
   }
 
   async function handleSave(recipe) {
+    const recipeKey = `${recipe.title}::${recipe.cookTime}`;
     setMessage("");
     setSavingTitle(recipe.title);
 
     try {
       await saveRecipe(recipe);
+      setSavedRecipeKeys((currentKeys) => new Set(currentKeys).add(recipeKey));
       setMessage(`Saved ${recipe.title}.`);
     } catch (error) {
       setMessage(error.message);
@@ -158,9 +151,6 @@ function RecipeGenerationPage({
           <h1>Generate Recipes</h1>
         </div>
 
-        <div className="generate-logo" aria-hidden="true">
-          <ChefHat size={22} strokeWidth={1.8} />
-        </div>
       </motion.header>
 
       <motion.section
@@ -292,7 +282,11 @@ function RecipeGenerationPage({
           >
             <h2>Recommended Recipes</h2>
             <div className="recipe-grid">
-              {generatedRecipes.map((recipe, index) => (
+              {generatedRecipes.map((recipe, index) => {
+                const recipeKey = `${recipe.title}::${recipe.cookTime}`;
+                const isSaved = savedRecipeKeys.has(recipeKey);
+
+                return (
                 <motion.article
                   key={recipe.title}
                   className="panel recipe-card"
@@ -308,14 +302,20 @@ function RecipeGenerationPage({
                   <span className="recipe-match-badge">{recipe.matchScore}% match</span>
                   <motion.button
                     type="button"
-                    className="recipe-save-icon"
-                    aria-label={`Save ${recipe.title}`}
-                    title={savingTitle === recipe.title ? "Saving recipe" : "Save recipe"}
+                    className={isSaved ? "recipe-save-icon saved" : "recipe-save-icon"}
+                    aria-label={isSaved ? `${recipe.title} saved` : `Save ${recipe.title}`}
+                    aria-pressed={isSaved}
+                    title={isSaved ? "Recipe saved" : savingTitle === recipe.title ? "Saving recipe" : "Save recipe"}
                     onClick={() => handleSave(recipe)}
-                    disabled={savingTitle === recipe.title}
+                    disabled={isSaved || savingTitle === recipe.title}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <BookmarkPlus size={18} strokeWidth={2} aria-hidden="true" />
+                    <Bookmark
+                      size={18}
+                      strokeWidth={2}
+                      fill={isSaved ? "currentColor" : "none"}
+                      aria-hidden="true"
+                    />
                   </motion.button>
                 </div>
 
@@ -366,7 +366,8 @@ function RecipeGenerationPage({
                   </motion.button>
                 </div>
                 </motion.article>
-              ))}
+                );
+              })}
             </div>
           </motion.section>
         )}
