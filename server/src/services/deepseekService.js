@@ -24,7 +24,7 @@ function buildRecipePrompt(ingredients, cuisine, difficulty) {
     .join("\n");
 
   return {
-    system: `You are SMARTKITCHEN, a beginner-friendly cooking assistant.
+    system: `Your name is ChefSpark, a beginner-friendly cooking assistant.
 
 Return JSON only. Do not include markdown, explanations, comments, or extra text.
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowRight,
@@ -56,12 +56,20 @@ const popularIngredients = [
   "Ginger"
 ];
 
+function normalizeIngredientName(name) {
+  return name.trim().toLowerCase();
+}
+
 function IngredientsPage({ onGenerateRecipes }) {
   const [ingredients, setIngredients] = useState([]);
   const [savedRecipeCount, setSavedRecipeCount] = useState(0);
   const [form, setForm] = useState(emptyForm);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [pendingAddNames, setPendingAddNames] = useState(() => new Set());
+  const [pendingDeleteIds, setPendingDeleteIds] = useState(() => new Set());
+  const pendingAddNamesRef = useRef(new Set());
+  const pendingDeleteIdsRef = useRef(new Set());
 
   async function loadIngredients() {
     setMessage("");
@@ -102,19 +110,59 @@ function IngredientsPage({ onGenerateRecipes }) {
       return;
     }
 
+    const normalizedName = normalizeIngredientName(trimmedName);
+
+    if (pendingAddNamesRef.current.has(normalizedName)) {
+      return;
+    }
+
+    setMessage("");
+
     const ingredientData = {
       name: trimmedName,
       quantity: null,
       unit: ""
     };
+    const temporaryId = `temp-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const optimisticIngredient = {
+      id: temporaryId,
+      ...ingredientData,
+      isOptimistic: true,
+      uiKey: temporaryId
+    };
+
+    pendingAddNamesRef.current.add(normalizedName);
+    setPendingAddNames((currentNames) => new Set(currentNames).add(normalizedName));
+    setIngredients((currentIngredients) => [optimisticIngredient, ...currentIngredients]);
 
     try {
-      await addIngredient(ingredientData);
-      setMessage("Ingredient added.");
+      const data = await addIngredient(ingredientData);
+
+      if (!data?.ingredient?.id) {
+        throw new Error(data?.message || "Ingredient could not be saved.");
+      }
+
+      setIngredients((currentIngredients) =>
+        currentIngredients.map((ingredient) =>
+          ingredient.id === temporaryId
+            ? { ...data.ingredient, uiKey: temporaryId }
+            : ingredient
+        )
+      );
+      setMessage(data.message || "Ingredient added.");
       resetForm();
-      await loadIngredients();
     } catch (error) {
+      setIngredients((currentIngredients) =>
+        currentIngredients.filter((ingredient) => ingredient.id !== temporaryId)
+      );
       setMessage(error.message);
+    } finally {
+      pendingAddNamesRef.current.delete(normalizedName);
+      setPendingAddNames((currentNames) => {
+        const nextNames = new Set(currentNames);
+        nextNames.delete(normalizedName);
+        return nextNames;
+      });
     }
   }
 
@@ -125,22 +173,64 @@ function IngredientsPage({ onGenerateRecipes }) {
   }
 
   async function handleDelete(id) {
+    if (typeof id === "string" && id.startsWith("temp-")) {
+      return;
+    }
+
+    if (pendingDeleteIdsRef.current.has(id)) {
+      return;
+    }
+
+    const ingredientIndex = ingredients.findIndex((ingredient) => ingredient.id === id);
+
+    if (ingredientIndex === -1) {
+      return;
+    }
+
+    const removedIngredient = ingredients[ingredientIndex];
+
     setMessage("");
+    pendingDeleteIdsRef.current.add(id);
+    setPendingDeleteIds((currentIds) => new Set(currentIds).add(id));
+    setIngredients((currentIngredients) =>
+      currentIngredients.filter((ingredient) => ingredient.id !== id)
+    );
 
     try {
-      await deleteIngredient(id);
-      setMessage("Ingredient deleted.");
-      await loadIngredients();
+      const data = await deleteIngredient(id);
+      setMessage(data.message || "Ingredient deleted.");
     } catch (error) {
+      setIngredients((currentIngredients) => {
+        if (currentIngredients.some((ingredient) => ingredient.id === id)) {
+          return currentIngredients;
+        }
+
+        const restoredIngredients = [...currentIngredients];
+        restoredIngredients.splice(
+          Math.min(ingredientIndex, restoredIngredients.length),
+          0,
+          removedIngredient
+        );
+        return restoredIngredients;
+      });
       setMessage(error.message);
+    } finally {
+      pendingDeleteIdsRef.current.delete(id);
+      setPendingDeleteIds((currentIds) => {
+        const nextIds = new Set(currentIds);
+        nextIds.delete(id);
+        return nextIds;
+      });
     }
   }
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const ingredientNames = ingredients.map((ingredient) => ingredient.name);
+  const ingredientNames = new Set(
+    ingredients.map((ingredient) => normalizeIngredientName(ingredient.name))
+  );
   const visiblePopularIngredients = popularIngredients
-    .filter((ingredient) => !ingredientNames.includes(ingredient))
+    .filter((ingredient) => !ingredientNames.has(normalizeIngredientName(ingredient)))
     .slice(0, 8);
 
   return (
@@ -227,12 +317,13 @@ function IngredientsPage({ onGenerateRecipes }) {
         <ul className="ingredient-chip-list">
           <AnimatePresence initial={false}>
             {ingredients.map((ingredient) => (
-              <motion.li key={ingredient.id} layout {...chipMotion}>
+              <motion.li key={ingredient.uiKey || ingredient.id} {...chipMotion}>
                 <span>{ingredient.name}</span>
                 <motion.button
                   type="button"
                   aria-label={`Delete ${ingredient.name}`}
                   onClick={() => handleDelete(ingredient.id)}
+                  disabled={ingredient.isOptimistic || pendingDeleteIds.has(ingredient.id)}
                   whileTap={{ scale: 0.86 }}
                 >
                   <X size={9} strokeWidth={2.5} aria-hidden="true" />
@@ -264,7 +355,12 @@ function IngredientsPage({ onGenerateRecipes }) {
             placeholder="Search or type an ingredient..."
             required
           />
-          <motion.button type="submit" aria-label="Add ingredient" whileTap={{ scale: 0.9 }}>
+          <motion.button
+            type="submit"
+            aria-label="Add ingredient"
+            disabled={pendingAddNames.has(normalizeIngredientName(form.name))}
+            whileTap={{ scale: 0.9 }}
+          >
             <Plus size={16} strokeWidth={2.5} aria-hidden="true" />
           </motion.button>
         </motion.form>
@@ -283,6 +379,8 @@ function IngredientsPage({ onGenerateRecipes }) {
               key={ingredient}
               type="button"
               onClick={() => addIngredientByName(ingredient)}
+              disabled={pendingAddNames.has(normalizeIngredientName(ingredient))}
+              aria-busy={pendingAddNames.has(normalizeIngredientName(ingredient))}
               whileTap={{ scale: 0.93 }}
             >
               <Plus size={11} strokeWidth={2.5} aria-hidden="true" />

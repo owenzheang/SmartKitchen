@@ -2,41 +2,39 @@
 
 ## Product
 
-ChefSpark is a mobile-first AI cooking assistant for people who have ingredients but are unsure what to cook. It began as the SmartKitchen university MVP and is now being developed as a real product intended for public use.
+ChefSpark is a mobile-first AI cooking assistant for people who have ingredients but are unsure what to cook. It began as the SmartKitchen university MVP and is now being developed as a real product.
 
-The product should provide a useful cooking workflow rather than behave like a generic recipe chatbot. Its core advantages are persistent ingredient inventory, structured recipe generation, visual recipe cards, saved recipes, and an installable mobile-first experience.
-
-## Current Users
-
-- Students and people living alone
-- Busy workers
-- Beginner cooks
-- People who want to use ingredients they already have
+ChefSpark is a structured cooking workflow rather than a generic chatbot. Its core value is persistent ingredient inventory, guided recipe generation, concise recipe cards, detailed cooking instructions, saved recipes, and an installable mobile experience.
 
 ## Current Product Flow
 
 ```text
 Register or log in
 -> Manage personal ingredients
--> Choose cuisine and difficulty
--> Generate three AI recipes
--> Review match scores and missing ingredients
--> Open recipe details
--> Save and revisit recipes
+-> Choose Chinese, Japanese, Western, or Thai cuisine
+-> Choose Easy, Medium, or Hard difficulty
+-> Generate three recipes
+-> Review recipe summaries and ingredient availability
+-> Open full ingredients and steps in Recipe Detail
+-> Save, unsave, and revisit recipes
 ```
 
 ## Current Capabilities
 
 - JWT-based registration, login, logout, and protected user data
-- Ingredient create, read, update, and delete operations backed by SQLite
-- Chinese or Western cuisine selection and Easy, Medium, or Hard difficulty
-- DeepSeek generation of three structured recipes
-- Match scores, missing ingredients, cooking time, and cooking steps
-- Pexels recipe images with caching and a placeholder fallback
-- Saved recipe list, detail view, and deletion
-- Responsive mobile-first UI with animated bottom navigation
-- Installable PWA tested on Android and iPhone
-- Frontend deployment on Vercel and backend deployment on Render
+- SQLite-backed ingredient create, read, update, and delete operations
+- Optimistic ingredient add and delete interactions with rollback on request failure
+- DeepSeek `deepseek-chat` generation of exactly three structured recipes
+- Pre-AI empty-input and dangerous-item checks
+- Prompt rules that ignore unusable items, reject condiment-only input, allow ingredient subsets, and require meaningfully different dishes
+- Post-AI validation for complete, safe recipe output
+- Summary-only Generate cards with match score, cooking time, difficulty, ingredient status, bookmark control, and View Recipe action
+- Full ingredient lists and cooking steps on Recipe Detail
+- Generated results preserved across in-app navigation for the current session and cleared on logout
+- SQLite-backed saved recipe list, detail view, deletion, and Generate-page save/unsave toggle
+- Shared cuisine placeholder artwork on Generate, Recipe Detail, and Saved Recipes
+- Responsive mobile-first UI, floating bottom navigation, and installable PWA
+- Vercel frontend and Render backend deployment setup
 
 ## Architecture
 
@@ -44,34 +42,45 @@ Register or log in
 - Backend: Node.js and Express.js
 - Database: SQLite
 - Authentication: JWT and bcrypt
-- AI: DeepSeek API using `deepseek-chat`
-- Images: Pexels API
+- AI: DeepSeek API using `deepseek-chat` and JSON responses
+- Images: branded cuisine placeholders by default; optional Pexels integration
 - Deployment: Vercel frontend and Render backend
 
-The existing architecture should be preserved unless a change is explicitly discussed and approved. Prefer focused, incremental improvements over broad rewrites.
+`IMAGE_PROVIDER` defaults to `placeholder`. In this mode the backend skips Pexels requests and returns an empty `imageUrl`; the frontend displays local Chinese, Japanese, Western, or Thai artwork. Setting `IMAGE_PROVIDER=pexels` re-enables the existing Pexels lookup and requires `PEXELS_API_KEY`. AI-generated recipe imagery is not implemented.
+
+## AI Safety and Quality
+
+Before DeepSeek is called, stored ingredient names are trimmed, empty names are removed, an empty usable list returns HTTP 400, and a small exact-match dangerous-item blocklist can stop generation.
+
+DeepSeek is instructed to silently ignore non-food, unsafe, vague, fictional, or joke items; reject condiment-only or otherwise unusable input; generate exactly three meaningfully different recipes; and use useful ingredient subsets instead of forcing every item into every dish. The backend then validates the count, structure, required fields, cooking-step count, match-score range, and dangerous content. Invalid or incomplete AI output returns a clear generation error.
 
 ## Product Principles
 
 - Mobile first
 - Simple, fast, and polished
 - Structured workflows over open-ended chat
-- Clear value beyond what a user could get from a generic AI chatbot
-- Reliable fallbacks when external AI or image services fail
-- Maintainable implementation without unnecessary frameworks or infrastructure
+- Clear value beyond a generic AI chatbot
+- Safe validation and graceful external-service fallbacks
+- Maintainable, incremental development within the existing architecture
 
 ## Current Limitations
 
 - Navigation is state-based rather than URL-routed.
 - JWT tokens are stored in browser `localStorage`.
-- Saved recipe duplicates are allowed.
-- Recipe generation depends on DeepSeek availability and output quality.
-- Cuisine choices are currently limited to Chinese and Western.
-- Nutrition, meal planning, shopping lists, and food recognition are not implemented.
-- There are no automated tests yet.
+- Generated recipes survive in-app navigation but disappear after browser refresh because they are not stored in SQLite.
+- Saved-recipe duplicates remain possible across sessions.
+- SQLite uses a local relative database file; durable production persistence and account retention on Render require further validation or a persistent storage strategy.
+- Render cold starts can add backend latency and remain an operational concern.
+- Ingredient usability and recipe diversity still depend partly on DeepSeek prompt compliance.
+- Placeholder images represent cuisines rather than each exact generated dish.
+- Automated tests, rate limiting, and dedicated AI cost controls are not implemented.
+- Food recognition, nutrition, meal planning, shopping lists, and voice cooking are not implemented.
 
 ## Documentation Sources
 
-- `README.md` contains the product overview and local setup instructions.
-- `RULES.md` defines development constraints and the approved stack.
-- `PROJECT_HANDOVER.md` contains detailed history, completed work, lessons, and future direction.
-- The SmartKitchen workflow and technical design documents describe the original MVP and are historical references, not current specifications.
+- `README.md`: user-facing overview and setup
+- `RULES.md`: development constraints and approved stack
+- `PROJECT_HANDOVER.md`: detailed current status, decisions, and history
+- `PROJECT_ROADMAP.md`: completed work and future priorities
+- `LESSONS_LEARNED.md`: accumulated product and engineering lessons
+- `SMARTKITCHEN_Workflow_v1.md` and `SMARTKITCHEN_Technical_Design_v1.md`: historical MVP references, not current requirements

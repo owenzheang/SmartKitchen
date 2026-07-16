@@ -7,6 +7,7 @@ import { fetchRecipeImageUrl } from "../services/pexelsService.js";
 
 const allowedCuisines = ["Chinese", "Japanese", "Western", "Korean", "Indian", "Thai"];
 const allowedDifficulties = ["Easy", "Medium", "Hard"];
+const imageProvider = (process.env.IMAGE_PROVIDER || "placeholder").trim().toLowerCase();
 
 function getUserIngredients(userId) {
   return new Promise((resolve, reject) => {
@@ -68,10 +69,13 @@ export async function generateRecipes(req, res) {
     const recipesWithImages = await Promise.all(
       recipes.recipes.map(async (recipe) => ({
         ...recipe,
-        imageUrl: await fetchRecipeImageUrl({
-          imagePrompt: recipe.imagePrompt,
-          title: recipe.title
-        })
+        imageUrl:
+          imageProvider === "pexels"
+            ? await fetchRecipeImageUrl({
+                imagePrompt: recipe.imagePrompt,
+                title: recipe.title
+              })
+            : ""
       }))
     );
 

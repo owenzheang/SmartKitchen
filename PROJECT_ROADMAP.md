@@ -1,240 +1,136 @@
 # ChefSpark Product Roadmap
 
-Version: June 2026
+Version: July 2026
 
----
+## Vision
 
-# Vision
+ChefSpark aims to become a practical mobile cooking companion rather than a generic recipe chatbot. It should help users move quickly from available ingredients to a confident cooking decision through a structured, persistent workflow.
 
-ChefSpark aims to become a practical AI-powered cooking companion rather than a generic recipe chatbot.
+## Current Stage
 
-The product focuses on helping users decide what to cook using ingredients they already have through a fast, structured, mobile-first workflow.
+ChefSpark is in public-beta stabilization as an installable PWA:
 
----
+- Frontend deployment: Vercel
+- Backend deployment: Render
+- Current database: SQLite
+- Mobile testing: Android and iPhone
 
-# Current Status
+The core flow works, but durable production data, cold-start performance, automated testing, and cost protection still require attention before production readiness can be claimed.
 
-Current Version
+## Recently Completed
 
-v1.0
+### Core Workflow
 
-Status
+- Registration, login, logout, and authenticated user data
+- SQLite-backed ingredient CRUD
+- Chinese, Japanese, Western, and Thai frontend cuisine choices
+- Easy, Medium, and Hard difficulty choices
+- DeepSeek generation of three recipes
+- Recipe summary cards and full Recipe Detail views
+- SQLite-backed saved recipes
 
-Public Beta
+### AI Safety and Recipe Quality
 
-Platform
+- Ingredient trimming and empty-value removal
+- HTTP 400 response for empty ingredient lists
+- Small dangerous-item blocklist before DeepSeek
+- Prompt rules for unusable, non-food, unsafe, fictional, joke, and vague input
+- Helpful rejection of condiment-only or otherwise unusable input
+- Exactly three meaningfully different recipes using useful ingredient subsets
+- Post-AI structure, completeness, score, step-count, and dangerous-content validation
 
-- Progressive Web App (PWA)
-- Android tested
-- iPhone tested
-- Frontend deployed on Vercel
-- Backend deployed on Render
+### Mobile UX and Performance
 
----
+- Generated results persist during in-app navigation and clear on logout
+- Generate results show summaries only; full steps remain on Recipe Detail
+- 22px generated recipe cards with clock metadata, ingredient-status panels, bookmark control, and View Recipe action
+- True Generate-page bookmark save/unsave using real SQLite row IDs
+- Saved-page deletion synchronizes matching current-session Generate bookmark state
+- Optimistic ingredient add and delete with rollback and duplicate-action guards
+- Successful ingredient mutations no longer refetch the full list
+- Floating bottom navigation, safe-area support, and PWA installation
 
-# Completed
+### Image Strategy
 
-## Core Platform
+- Placeholder mode is the default image-provider mode
+- Pexels requests are skipped in placeholder mode
+- Shared final cuisine artwork is used across Generate, Recipe Detail, and Saved Recipes
+- Optional Pexels integration remains available through `IMAGE_PROVIDER=pexels`
 
-- User registration
-- User login
-- JWT authentication
-- Secure password hashing
-- User logout
+### Security Hygiene
 
-## Ingredients
+- Historically exposed DeepSeek credential revoked and replaced
+- Real `.env` files removed from tracking and ignored
+- Secret-history exposure documented as a critical engineering lesson
 
-- Add ingredients
-- Edit ingredients
-- Delete ingredients
-- Personal ingredient inventory
+## Current Stabilization Priorities
 
-## AI Recipe Generation
+1. Add focused automated tests for authentication, optimistic rollback, recipe-response validation, and save/unsave synchronization.
+2. Decide whether Generate bookmark state should be rebuilt from saved recipes after refresh.
+3. Define saved-recipe duplicate behavior and add server-side protection if duplicates are not desired.
+4. Improve AI usability and diversity evaluation with repeatable test cases.
+5. Run real-user testing on installed Android and iPhone PWAs.
+6. Review whether Git-history cleanup is needed as a separate security operation.
 
-- DeepSeek integration
-- Generate three recipes
-- Cuisine selection
-- Difficulty selection
-- Match score
-- Missing ingredient analysis
-- Recipe detail page
+## Production Readiness
 
-## Recipe Images
+### Durable Data
 
-- Pexels integration
-- Placeholder fallback
-- Image caching
+- Verify SQLite retention across Render restarts and deploys.
+- Establish a persistent disk or approved future database strategy before depending on long-term account, ingredient, and saved-recipe retention.
+- Test backup and recovery expectations.
 
-## Saved Recipes
+### Reliability and Performance
 
-- Save recipes
-- View saved recipes
-- Delete saved recipes
+- Measure Render cold starts and authentication/API latency.
+- Add health monitoring and clearer operational diagnostics.
+- Add appropriate request timeouts and retry policies without causing duplicate AI calls.
 
-## Mobile Experience
+### AI Cost and Abuse Protection
 
-- Responsive design
-- Floating bottom navigation
-- Mobile-first layout
-- PWA installation
-- Android support
-- iPhone support
+- Add server-side rate limiting.
+- Add per-user or per-period generation limits if appropriate.
+- Monitor DeepSeek usage and unexpected model/key activity.
+- Use separate local, production, and experimental API keys.
 
----
+### Security
 
-# Current Priority
+- Remove the fallback JWT secret before production use and require `JWT_SECRET` configuration.
+- Review `localStorage` token handling as the product's security requirements mature.
+- Keep real secrets out of Git and rotate immediately after any exposure.
 
-## UI Polish
+## Next Major Product Feature
 
-Status
+### Food Recognition
 
-In Progress
+Food Recognition remains ChefSpark's next major differentiating feature.
 
-Goals
+```text
+Take a photo
+-> Detect ingredients
+-> Review and correct detections
+-> Add approved items to inventory
+-> Generate recipes through the existing workflow
+```
 
-- Improve icon sizing
-- Improve navigation animation
-- Refine transitions
-- Improve premium mobile feel
+This feature should reuse the current ingredient inventory and generation flow rather than creating a separate chatbot experience. It should begin after the production-readiness risks above are sufficiently controlled.
 
----
+## Longer-Term Features
 
-# Next Major Feature
+- Shopping list generated from missing ingredients
+- Weekly meal planning
+- Nutrition and calorie information
+- Recipe search and filtering
+- Duplicate detection and recipe collections
+- Voice-guided cooking mode
+- Expiry-date and food-waste reminders
+- Recipe sharing
+- Accurate generated or licensed recipe imagery, if quality and cost justify it
 
-## Food Recognition
+## Product Principle
 
-Priority
+Every proposed feature should answer:
 
-★★★★★
+> Why would a user choose ChefSpark instead of simply asking a generic AI chatbot?
 
-Goal
-
-Allow users to photograph ingredients and automatically add detected ingredients into their inventory.
-
-Expected workflow
-
-Take Photo
-
-↓
-
-Detect Ingredients
-
-↓
-
-Review Detection
-
-↓
-
-Add to Inventory
-
-↓
-
-Generate Recipes
-
-Reason
-
-This feature provides a workflow advantage over generic AI chatbots.
-
----
-
-# Planned Features
-
-## Shopping List
-
-Automatically generate shopping lists for missing ingredients.
-
-Priority
-
-★★★★☆
-
----
-
-## Meal Planner
-
-Weekly meal planning.
-
-Breakfast
-
-Lunch
-
-Dinner
-
-Priority
-
-★★★★☆
-
----
-
-## Nutrition
-
-Calories
-
-Protein
-
-Fat
-
-Carbohydrates
-
-Priority
-
-★★★☆☆
-
----
-
-## Recipe Search
-
-Search recipes
-
-Filter recipes
-
-Duplicate detection
-
-Priority
-
-★★★☆☆
-
----
-
-## Recipe Collections
-
-Folders
-
-Favorites
-
-Tags
-
-Priority
-
-★★★☆☆
-
----
-
-## Voice Cooking Mode
-
-Hands-free cooking
-
-Step-by-step instructions
-
-Priority
-
-★★☆☆☆
-
----
-
-# Long-Term Goals
-
-- Release ChefSpark as a polished public product.
-- Publish on Google Play.
-- Build a real user base.
-- Collect user feedback.
-- Continue improving the product based on real-world usage instead of assumptions.
-
----
-
-# Product Philosophy
-
-Every new feature should answer one question:
-
-Why would a user choose ChefSpark instead of simply asking ChatGPT?
-
-Only features that improve the user's workflow should be added.
+Prioritize features that improve ingredient capture, persistence, decision speed, cooking confidence, or repeat use.

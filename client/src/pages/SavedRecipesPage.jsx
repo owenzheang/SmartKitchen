@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, Clock, Trash2 } from "lucide-react";
+import RecipePlaceholderHeader from "../components/RecipePlaceholderHeader.jsx";
 import { deleteSavedRecipe, getSavedRecipes } from "../services/api.js";
 
 const pageMotion = {
@@ -44,18 +45,6 @@ function formatCookTime(cookTime) {
   return cookTime.replace(/\bminutes\b/i, "min").replace(/\bminute\b/i, "min");
 }
 
-function getMatchClass(matchScore) {
-  if (matchScore >= 90) {
-    return "high";
-  }
-
-  if (matchScore >= 70) {
-    return "medium";
-  }
-
-  return "low";
-}
-
 const difficultyDotCounts = {
   Easy: 1,
   Medium: 2,
@@ -74,10 +63,11 @@ function DifficultyDots({ difficulty }) {
   );
 }
 
-function SavedRecipesPage({ onBack, onViewRecipe }) {
+function SavedRecipesPage({ onBack, onViewRecipe, onRecipeDeleted }) {
   const [savedRecipes, setSavedRecipes] = useState([]);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [pendingDeleteIds, setPendingDeleteIds] = useState(new Set());
 
   async function loadSavedRecipes() {
     setMessage("");
@@ -97,15 +87,29 @@ function SavedRecipesPage({ onBack, onViewRecipe }) {
     loadSavedRecipes();
   }, []);
 
-  async function handleDelete(id) {
+  async function handleDelete(savedRecipe) {
+    if (pendingDeleteIds.has(savedRecipe.id)) {
+      return;
+    }
+
     setMessage("");
+    setPendingDeleteIds((currentIds) => new Set(currentIds).add(savedRecipe.id));
 
     try {
-      await deleteSavedRecipe(id);
+      await deleteSavedRecipe(savedRecipe.id);
+      setSavedRecipes((currentRecipes) =>
+        currentRecipes.filter((currentRecipe) => currentRecipe.id !== savedRecipe.id)
+      );
+      onRecipeDeleted?.(savedRecipe);
       setMessage("Saved recipe deleted.");
-      await loadSavedRecipes();
     } catch (error) {
       setMessage(error.message);
+    } finally {
+      setPendingDeleteIds((currentIds) => {
+        const nextIds = new Set(currentIds);
+        nextIds.delete(savedRecipe.id);
+        return nextIds;
+      });
     }
   }
 
@@ -175,15 +179,13 @@ function SavedRecipesPage({ onBack, onViewRecipe }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: -36, transition: { duration: 0.22 } }}
             >
-              <div className={recipe.imageUrl ? "saved-image-placeholder has-image" : "saved-image-placeholder"}>
-                {recipe.imageUrl && (
-                  <img src={recipe.imageUrl} alt={recipe.title} />
-                )}
-                <span className={`match-badge ${getMatchClass(matchScore)}`}>
-                  {matchScore}% match
-                </span>
-                <span className="saved-date-badge">{formatSavedDate(savedRecipe.savedAt)}</span>
-              </div>
+              <RecipePlaceholderHeader
+                title={recipe.title}
+                cuisine={recipe.cuisine}
+                matchScore={matchScore}
+                savedLabel={formatSavedDate(savedRecipe.savedAt)}
+                variant="saved"
+              />
 
               <div className="saved-card-body">
                 <div className="saved-tags">
@@ -204,8 +206,13 @@ function SavedRecipesPage({ onBack, onViewRecipe }) {
                   <motion.button
                     type="button"
                     className="saved-delete-button"
-                    aria-label={`Delete ${recipe.title}`}
-                    onClick={() => handleDelete(savedRecipe.id)}
+                    aria-label={
+                      pendingDeleteIds.has(savedRecipe.id)
+                        ? `Deleting ${recipe.title}`
+                        : `Delete ${recipe.title}`
+                    }
+                    onClick={() => handleDelete(savedRecipe)}
+                    disabled={pendingDeleteIds.has(savedRecipe.id)}
                     whileTap={{ scale: 0.92 }}
                   >
                     <Trash2 size={21} strokeWidth={1.9} aria-hidden="true" />

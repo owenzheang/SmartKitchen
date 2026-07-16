@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowLeft, ChefHat, Clock, Leaf } from "lucide-react";
+import RecipePlaceholderHeader from "../components/RecipePlaceholderHeader.jsx";
 import { getSavedRecipe } from "../services/api.js";
 
 const pageMotion = {
@@ -108,15 +109,11 @@ function RecipeDetailPage({ savedRecipeId, recipe: generatedRecipe = null, onBac
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.32 }}
         >
-          <section
-            className={recipe.imageUrl ? "recipe-detail-image-placeholder has-image" : "recipe-detail-image-placeholder"}
-            aria-label="Recipe image"
-          >
-            {recipe.imageUrl && (
-              <img src={recipe.imageUrl} alt={recipe.title} />
-            )}
-            <span>{recipe.cuisine}</span>
-          </section>
+          <RecipePlaceholderHeader
+            title={recipe.title}
+            cuisine={recipe.cuisine}
+            variant="hero"
+          />
 
           <section className="recipe-detail-summary-card">
             <div className="recipe-detail-badges">

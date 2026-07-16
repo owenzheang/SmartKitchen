@@ -2,7 +2,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
-  Bookmark,
   Check,
   CheckCircle2,
   ChevronDown,
@@ -13,7 +12,14 @@ import {
   Utensils,
   X
 } from "lucide-react";
-import { generateRecipes, getIngredients, saveRecipe } from "../services/api.js";
+import RecipePlaceholderHeader from "../components/RecipePlaceholderHeader.jsx";
+import {
+  deleteSavedRecipe,
+  generateRecipes,
+  getIngredients,
+  saveRecipe
+} from "../services/api.js";
+import { getRecipeKey } from "../utils/recipeVisuals.js";
 
 const pageMotion = {
   initial: { opacity: 0, y: 18 },
@@ -73,8 +79,8 @@ function RecipeGenerationPage({
   onBack,
   generatedRecipes,
   setGeneratedRecipes,
-  savedRecipeKeys,
-  setSavedRecipeKeys,
+  savedRecipeIds,
+  setSavedRecipeIds,
   onViewRecipe
 }) {
   const [ingredients, setIngredients] = useState([]);
@@ -82,7 +88,7 @@ function RecipeGenerationPage({
   const [difficulty, setDifficulty] = useState("Easy");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [savingTitle, setSavingTitle] = useState("");
+  const [pendingRecipeKeys, setPendingRecipeKeys] = useState(new Set());
 
   useEffect(() => {
     async function loadIngredients() {
@@ -112,19 +118,54 @@ function RecipeGenerationPage({
     }
   }
 
-  async function handleSave(recipe) {
-    const recipeKey = `${recipe.title}::${recipe.cookTime}`;
+  async function handleToggleSaved(recipe) {
+    const recipeKey = getRecipeKey(recipe);
+
+    if (pendingRecipeKeys.has(recipeKey)) {
+      return;
+    }
+
+    const isSaved = savedRecipeIds.has(recipeKey);
+    const savedRecipeId = savedRecipeIds.get(recipeKey);
     setMessage("");
-    setSavingTitle(recipe.title);
+    setPendingRecipeKeys((currentKeys) => new Set(currentKeys).add(recipeKey));
 
     try {
-      await saveRecipe(recipe);
-      setSavedRecipeKeys((currentKeys) => new Set(currentKeys).add(recipeKey));
-      setMessage(`Saved ${recipe.title}.`);
+      if (isSaved) {
+        await deleteSavedRecipe(savedRecipeId);
+        setSavedRecipeIds((currentIds) => {
+          if (currentIds.get(recipeKey) !== savedRecipeId) {
+            return currentIds;
+          }
+
+          const nextIds = new Map(currentIds);
+          nextIds.delete(recipeKey);
+          return nextIds;
+        });
+        setMessage(`Removed ${recipe.title} from saved recipes.`);
+      } else {
+        const data = await saveRecipe(recipe);
+        const newSavedRecipeId = data.savedRecipe?.id;
+
+        if (!Number.isInteger(newSavedRecipeId)) {
+          throw new Error("The saved recipe response did not include a valid id.");
+        }
+
+        setSavedRecipeIds((currentIds) => {
+          const nextIds = new Map(currentIds);
+          nextIds.set(recipeKey, newSavedRecipeId);
+          return nextIds;
+        });
+        setMessage(`Saved ${recipe.title}.`);
+      }
     } catch (error) {
       setMessage(error.message);
     } finally {
-      setSavingTitle("");
+      setPendingRecipeKeys((currentKeys) => {
+        const nextKeys = new Set(currentKeys);
+        nextKeys.delete(recipeKey);
+        return nextKeys;
+      });
     }
   }
 
@@ -283,8 +324,9 @@ function RecipeGenerationPage({
             <h2>Recommended Recipes</h2>
             <div className="recipe-grid">
               {generatedRecipes.map((recipe, index) => {
-                const recipeKey = `${recipe.title}::${recipe.cookTime}`;
-                const isSaved = savedRecipeKeys.has(recipeKey);
+                const recipeKey = getRecipeKey(recipe);
+                const isSaved = savedRecipeIds.has(recipeKey);
+                const isPending = pendingRecipeKeys.has(recipeKey);
 
                 return (
                 <motion.article
@@ -295,33 +337,17 @@ function RecipeGenerationPage({
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ delay: index * 0.06, duration: 0.3 }}
                 >
-                <div className={recipe.imageUrl ? "recipe-card-image has-image" : "recipe-card-image"}>
-                  {recipe.imageUrl && (
-                    <img src={recipe.imageUrl} alt={recipe.title} />
-                  )}
-                  <span className="recipe-match-badge">{recipe.matchScore}% match</span>
-                  <motion.button
-                    type="button"
-                    className={isSaved ? "recipe-save-icon saved" : "recipe-save-icon"}
-                    aria-label={isSaved ? `${recipe.title} saved` : `Save ${recipe.title}`}
-                    aria-pressed={isSaved}
-                    title={isSaved ? "Recipe saved" : savingTitle === recipe.title ? "Saving recipe" : "Save recipe"}
-                    onClick={() => handleSave(recipe)}
-                    disabled={isSaved || savingTitle === recipe.title}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Bookmark
-                      size={18}
-                      strokeWidth={2}
-                      fill={isSaved ? "currentColor" : "none"}
-                      aria-hidden="true"
-                    />
-                  </motion.button>
-                </div>
+                <RecipePlaceholderHeader
+                  title={recipe.title}
+                  cuisine={recipe.cuisine}
+                  matchScore={recipe.matchScore}
+                  variant="card"
+                  showTitle
+                  isSaved={isSaved}
+                  isPending={isPending}
+                  onToggleSave={() => handleToggleSaved(recipe)}
+                />
 
-                <div className="recipe-card-header">
-                  <h3>{recipe.title}</h3>
-                </div>
                 <p className="recipe-card-meta">
                   <span>{recipe.cuisine}</span>
                   <span className="meta-separator">|</span>

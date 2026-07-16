@@ -8,6 +8,7 @@ import RecipeGenerationPage from "./pages/RecipeGenerationPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import SavedRecipesPage from "./pages/SavedRecipesPage.jsx";
 import { getToken, removeToken } from "./services/api.js";
+import { getRecipeKey } from "./utils/recipeVisuals.js";
 
 const navTransition = {
   duration: 0.28,
@@ -31,14 +32,14 @@ function App() {
   const [selectedSavedRecipeId, setSelectedSavedRecipeId] = useState(null);
   const [selectedGeneratedRecipe, setSelectedGeneratedRecipe] = useState(null);
   const [generatedRecipes, setGeneratedRecipes] = useState([]);
-  const [savedGeneratedRecipeKeys, setSavedGeneratedRecipeKeys] = useState(new Set());
+  const [savedGeneratedRecipeIds, setSavedGeneratedRecipeIds] = useState(new Map());
 
   function handleLogout() {
     removeToken();
     setSelectedSavedRecipeId(null);
     setSelectedGeneratedRecipe(null);
     setGeneratedRecipes([]);
-    setSavedGeneratedRecipeKeys(new Set());
+    setSavedGeneratedRecipeIds(new Map());
     setPage("login");
   }
 
@@ -52,6 +53,20 @@ function App() {
     setSelectedSavedRecipeId(null);
     setSelectedGeneratedRecipe(recipe);
     setPage("recipeDetail");
+  }
+
+  function handleSavedRecipeDeleted(savedRecipe) {
+    const recipeKey = getRecipeKey(savedRecipe.recipe);
+
+    setSavedGeneratedRecipeIds((currentIds) => {
+      if (currentIds.get(recipeKey) !== savedRecipe.id) {
+        return currentIds;
+      }
+
+      const nextIds = new Map(currentIds);
+      nextIds.delete(recipeKey);
+      return nextIds;
+    });
   }
 
   function renderWithNavigation(content) {
@@ -211,8 +226,8 @@ function App() {
         onBack={() => setPage("ingredients")}
         generatedRecipes={generatedRecipes}
         setGeneratedRecipes={setGeneratedRecipes}
-        savedRecipeKeys={savedGeneratedRecipeKeys}
-        setSavedRecipeKeys={setSavedGeneratedRecipeKeys}
+        savedRecipeIds={savedGeneratedRecipeIds}
+        setSavedRecipeIds={setSavedGeneratedRecipeIds}
         onViewRecipe={viewGeneratedRecipe}
         onLogout={handleLogout}
         onSavedRecipes={() => setPage("savedRecipes")}
@@ -226,6 +241,7 @@ function App() {
         onBack={() => setPage("ingredients")}
         onLogout={handleLogout}
         onViewRecipe={viewSavedRecipe}
+        onRecipeDeleted={handleSavedRecipeDeleted}
       />
     );
   }
